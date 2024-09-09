@@ -55,31 +55,37 @@ on:
         description: The docker image which will be loaded
 
 jobs:
-  tmp:
+  prepare:
+    name: prepare
     runs-on: ubuntu-latest
+    outputs:
+      runner: ${{ steps.set-param.outputs.runner }}
+      device: ${{ steps.set-param.outputs.device }}
+      image: ${{ steps.set-param.outputs.image }}
     steps:
-      - run: |
-          set -e
-          echo ${{ github.event.inputs.runner }}
-          echo ${{ github.event.inputs.runner || 'self-hosted' }}
+      - name: Set param
+        id: set-param
+        run: |
+          echo "runner=${{ github.event.inputs.runner || 'self-hosted' }}" >> $GITHUB_OUTPUT
+          echo "device=${{ github.event.inputs.device || '/dev/davinci6' }}" >> $GITHUB_OUTPUT
+          echo "image=${{ github.event.inputs.image || 'ascendai/cann:7.1-openeuler2203sp2' }}" >> $GITHUB_OUTPUT
 
   linux-py3_8-fetch-and-rebase:
     name: linux-py3_8-7.0.RC1.alpha005
-    needs: tmp
+    needs:
+      - prepare
     uses: ./.github/workflows/_fetch_and_rebase.yml
     with:
-      runner: ${{ github.event.inputs.runner || 'self-hosted' }}
+      runner: ${{ needs.prepare.outputs.runner }}
       loop: 10
 
   linux-py3_8-build-and-test:
     name: linux-py3_8-7.0.RC1.alpha005
-    needs: linux-py3_8-fetch-and-rebase
-    env:
-      INPUT_RUNNER: ${{ github.event.inputs.runner || 'self-hosted' }}
-      INPUT_DEVICE: ${{ github.event.inputs.device || '/dev/davinci6' }}
-      INPUT_IMAGE: ${{ github.event.inputs.image || 'ascendai/cann:7.1-openeuler2203sp2' }}
+    needs:
+      - prepare
+      - linux-py3_8-fetch-and-rebase
     uses: ./.github/workflows/_build-and-test.yml
     with:
-      runner: ${{ env.INPUT_RUNNER }}
-      device: ${{ env.INPUT_DEVICE }}
-      image: ${{ env.INPUT_IMAGE }}
+      runner: ${{ needs.prepare.outputs.runner }}
+      device: ${{ needs.prepare.outputs.device }}
+      image: ${{ needs.prepare.outputs.image }}
