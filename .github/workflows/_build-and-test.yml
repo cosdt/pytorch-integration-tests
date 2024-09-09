@@ -56,11 +56,12 @@ jobs:
       - name: Compile and install torch_npu
         working-directory: /root/build/npu/pytorch
         run: |
-          pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+          pip install -r requirements.txt
           bash ci/build.sh --python=`python --version | awk '{print $2}' | cut -d '.' -f 1,2`
-          pip3 install dist/torch_npu*.whl
+          pip install dist/torch_npu*.whl
+
       - name: Do the test
-        working-directory: /root/build
+        working-directory: /root/build/npu/pytorch
         run: |
-          pip3 install -r npu/pytorch/test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --no-deps
-          python npu/pytorch/ci/access_control_test.py
+          pip install -r test/requirements.txt --no-deps
+          python ci/access_control_test.py
