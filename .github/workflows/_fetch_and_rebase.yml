@@ -23,7 +23,7 @@ jobs:
       #    remote_branch: upstream/main
       #    loop: ${{ inputs.loop }}
       - name: Pull latest codes for torch_npu
-        uses: .github/actions/fetch-and-rebase
+        uses: ./.github/actions/fetch-and-rebase
         with:
           repo_path: /home/runner/actions-runner/codes/npu/pytorch
           remote_branch: upstream/master
