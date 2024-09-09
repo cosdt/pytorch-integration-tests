@@ -30,6 +30,7 @@ on:
         type: choice
         options:
           - self-hosted
+          - npu-arm64
         default: 'self-hosted'
         description: The runner selected to run on
       device:
