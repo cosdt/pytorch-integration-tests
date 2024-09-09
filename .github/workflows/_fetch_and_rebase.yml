@@ -1,4 +1,4 @@
-name: Fetch and Rebase
+name: '[Internal] Fetch and Rebase'
 
 on:
   workflow_call:
@@ -23,7 +23,7 @@ jobs:
       #    remote_branch: upstream/main
       #    loop: ${{ inputs.loop }}
       - name: Pull latest codes for torch_npu
-        uses: cosdt/pytorch-integration-tests/.github/actions/fetch-and-rebase@main
+        uses: .github/actions/fetch-and-rebase
         with:
           repo_path: /home/runner/actions-runner/codes/npu/pytorch
           remote_branch: upstream/master

@@ -1,4 +1,4 @@
-name: Build and Test
+name: '[Internal] Build and Test'
 
 on:
   workflow_call:
@@ -7,14 +7,14 @@ on:
         required: true
         type: string
         description: The runner selected to run on
-      devices:
+      device:
         required: true
         type: string
-        description: The devices selected to run on
+        description: The device selected to run on
       image:
         required: true
         type: string
-        description: The docker iamge which will be loaded
+        description: The docker image which will be loaded
 
 jobs:
   build-and-test:
@@ -32,7 +32,12 @@ jobs:
         - /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/
         - /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info
         - /home/runner/actions-runner/codes:/root/codes
-      options: --network host ${{ inputs.devices }} --device /dev/davinci_manager --device /dev/devmm_svm --device /dev/hisi_hdc
+      options: >-
+        --network host
+        --device ${{ inputs.device }}
+        --device /dev/davinci_manager
+        --device /dev/devmm_svm
+        --device /dev/hisi_hdc
     steps:
       #- name: Set environment
       #  run: |
