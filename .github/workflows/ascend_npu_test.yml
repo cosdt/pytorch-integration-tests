@@ -66,6 +66,7 @@ jobs:
       - name: Set param
         id: set-param
         run: |
+          set -e
           echo "runner=${{ github.event.inputs.runner || 'self-hosted' }}" >> $GITHUB_OUTPUT
           echo "device=${{ github.event.inputs.device || '/dev/davinci6' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:7.1-openeuler2203sp2' }}" >> $GITHUB_OUTPUT
