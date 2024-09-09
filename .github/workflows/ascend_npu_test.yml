@@ -55,12 +55,10 @@ on:
         description: The docker image which will be loaded
 
 jobs:
-  env:
-    INPUT_RUNNER: ${{ github.event.inputs.runner || 'self-hosted' }}
-    INPUT_DEVICE: ${{ github.event.inputs.device || '/dev/davinci6' }}
-    INPUT_IMAGE: ${{ github.event.inputs.image || 'ascendai/cann:7.1-openeuler2203sp2' }}
   linux-py3_8-fetch-and-rebase:
     name: linux-py3_8-7.0.RC1.alpha005
+    env:
+      INPUT_RUNNER: ${{ github.event.inputs.runner || 'self-hosted' }}
     uses: ./.github/workflows/_fetch_and_rebase.yml
     with:
       runner: ${{ env.INPUT_RUNNER }}
@@ -68,8 +66,12 @@ jobs:
 
   linux-py3_8-build-and-test:
     name: linux-py3_8-7.0.RC1.alpha005
-    uses: ./.github/workflows/_build-and-test.yml
     needs: linux-py3_8-fetch-and-rebase
+    env:
+      INPUT_RUNNER: ${{ github.event.inputs.runner || 'self-hosted' }}
+      INPUT_DEVICE: ${{ github.event.inputs.device || '/dev/davinci6' }}
+      INPUT_IMAGE: ${{ github.event.inputs.image || 'ascendai/cann:7.1-openeuler2203sp2' }}
+    uses: ./.github/workflows/_build-and-test.yml
     with:
       runner: ${{ env.INPUT_RUNNER }}
       device: ${{ env.INPUT_DEVICE }}
