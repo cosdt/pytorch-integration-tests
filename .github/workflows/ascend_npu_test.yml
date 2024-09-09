@@ -55,11 +55,15 @@ on:
         description: The docker image which will be loaded
 
 jobs:
+  env:
+    INPUT_RUNNER: ${{ github.event.inputs.runner || 'self-hosted' }}
+    INPUT_DEVICE: ${{ github.event.inputs.device || '/dev/davinci6' }}
+    INPUT_IMAGE: ${{ github.event.inputs.image || 'ascendai/cann:7.1-openeuler2203sp2' }}
   linux-py3_8-fetch-and-rebase:
     name: linux-py3_8-7.0.RC1.alpha005
     uses: ./.github/workflows/_fetch_and_rebase.yml
     with:
-      runner: ${{ github.event.inputs.runner || 'self-hosted' }}
+      runner: ${{ env.INPUT_RUNNER }}
       loop: 10
 
   linux-py3_8-build-and-test:
@@ -67,6 +71,6 @@ jobs:
     uses: ./.github/workflows/_build-and-test.yml
     needs: linux-py3_8-fetch-and-rebase
     with:
-      runner: ${{ github.event.inputs.runner || 'self-hosted' }}
-      device: ${{ github.event.inputs.device || '/dev/davinci6' }}
-      image: ${{ github.event.inputs.image || 'ascendai/cann:7.1-openeuler2203sp2' }}
+      runner: ${{ env.INPUT_RUNNER }}
+      device: ${{ env.INPUT_DEVICE }}
+      image: ${{ env.INPUT_IMAGE }}
