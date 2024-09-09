@@ -48,9 +48,7 @@ on:
         description: 'The device selected to run on'
       image:
         required: true
-        type: choice
-        options:
-          - ascendai/cann:7.1-openeuler2203sp2
+        type: string
         default: 'ascendai/cann:7.1-openeuler2203sp2'
         description: The docker image which will be loaded
 
