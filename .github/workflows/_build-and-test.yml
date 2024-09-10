@@ -71,6 +71,11 @@ jobs:
               cmake \
               ninja-build
 
+      - name: Create symlinks for gcc and g++
+        run: |
+          ln -s /usr/bin/gcc-10 /usr/bin/gcc
+          ln -s /usr/bin/g++-10 /usr/bin/g++
+
       - name: Install pip dependencies
         run: |
           pip install -i https://pypi.tuna.tsinghua.edu.cn/simple \
@@ -78,7 +83,6 @@ jobs:
               setuptools 
 
       - name: Show versions
-        continue-on-error: true
         run: |
           set -x
           python --version
