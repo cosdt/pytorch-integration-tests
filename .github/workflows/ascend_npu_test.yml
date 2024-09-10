@@ -52,6 +52,10 @@ on:
         default: 'ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9'
         description: The docker image which will be loaded
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   prepare:
     name: prepare
