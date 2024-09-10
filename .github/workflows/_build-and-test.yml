@@ -105,7 +105,7 @@ jobs:
           pip install dist/torch_npu*.whl
 
       - name: Do the test
-        working-directory: /root/build/npu/pytorch
+        working-directory: /root/build
         run: |
-          pip install -r test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --no-deps
-          python ci/access_control_test.py
+          pip install -r npu/pytorch/test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --no-deps
+          python npu/pytorch/ci/access_control_test.py
