@@ -59,17 +59,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install wheel setuptools
+          apt update
+          apt install -y gcc g++ make cmake
+          pip install wheel setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple
 
       - name: Compile and install torch_npu
         working-directory: /root/build/npu/pytorch
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
           bash ci/build.sh --python=`python --version | awk '{print $2}' | cut -d '.' -f 1,2`
           pip install dist/torch_npu*.whl
 
       - name: Do the test
         working-directory: /root/build/npu/pytorch
         run: |
-          pip install -r test/requirements.txt --no-deps
+          pip install -r test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --no-deps
           python ci/access_control_test.py
