@@ -43,9 +43,11 @@ jobs:
       #- name: Set environment
       #  run: |
       #    source /root/.bashrc && conda activate torch_npu
+
       - name: Prepare the codes
         run: |
-          \cp -rf /root/codes/ /root/build
+          cp -rf /root/codes /root/build
+
       #- name: Compile torch
       #  working-directory: /root/build/pytorch/pytorch
       #  run: |
@@ -54,14 +56,20 @@ jobs:
       #    export USE_CUDA=0
       #    export USE_XNNPACK=0
       #    python setup.py develop
+
+      - name: Install dependencies
+        run: |
+          pip install wheel setuptools
+
       - name: Compile and install torch_npu
         working-directory: /root/build/npu/pytorch
         run: |
           pip install -r requirements.txt
           bash ci/build.sh --python=`python --version | awk '{print $2}' | cut -d '.' -f 1,2`
-          pip3 install dist/torch_npu*.whl
+          pip install dist/torch_npu*.whl
+
       - name: Do the test
         working-directory: /root/build/npu/pytorch
         run: |
-          pip3 install -r test/requirements.txt --no-deps
+          pip install -r test/requirements.txt --no-deps
           python ci/access_control_test.py
