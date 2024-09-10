@@ -71,12 +71,16 @@ jobs:
 
   fetch-and-rebase:
     name: Fetch and rebase
+    runs-on: ${{ needs.prepare.outputs.runner }}
     needs:
       - prepare
-    uses: ./.github/workflows/_fetch_and_rebase.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      loop: 10
+    steps:
+      - name: Pull latest codes for torch_npu
+        uses: ./.github/actions/fetch-and-rebase
+        with:
+          repo_path: /home/runner/actions-runner/codes/npu/pytorch
+          remote_branch: upstream/master
+          loop: 10
 
   build-and-test:
     name: Build and test

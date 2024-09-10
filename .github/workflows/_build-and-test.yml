@@ -18,6 +18,7 @@ on:
 
 jobs:
   build-and-test:
+    name: build and test in ${{ inputs.image }} with ${{ inputs.device }}
     runs-on: ${{ inputs.runner }}
     defaults:
       run:
