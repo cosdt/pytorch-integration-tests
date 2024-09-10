@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     defaults:
       run:
-        shell: bash
+        shell: bash -el {0}
     container:
       image: ${{ inputs.image }}
       env:

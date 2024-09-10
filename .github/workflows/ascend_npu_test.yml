@@ -58,7 +58,7 @@ concurrency:
 
 jobs:
   prepare:
-    name: prepare
+    name: Prepare
     runs-on: ubuntu-latest
     outputs:
       runner: ${{ steps.set-param.outputs.runner }}

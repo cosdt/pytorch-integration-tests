@@ -7,20 +7,15 @@ across various devices by running comprehensive GitHub workflows.
 
 ## Accelerator Integration Test Results
 
-| [torch_npu][1]                         |
-|----------------------------------------|
-| [![torch_npu periodic workflow][2]][3] | 
-| [![torch_npu manual workflow][4]][5]   |
+| [torch_npu][1]                   |
+|----------------------------------|
+| [![Ascend NPU Test Suite][2]][3] | 
 
 [1]: https://github.com/ascend/pytorch
 
-[2]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/periodic.yml/badge.svg
+[2]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/ascend_npu_test.yml/badge.svg
 
-[3]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/periodic.yml
-
-[4]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/manual.yml/badge.svg
-
-[5]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/manual.yml
+[3]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/ascend_npu_test.yml
 
 ## Overview
 
