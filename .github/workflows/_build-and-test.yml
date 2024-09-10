@@ -80,7 +80,8 @@ jobs:
         run: |
           pip install -i https://pypi.tuna.tsinghua.edu.cn/simple \
               wheel \
-              setuptools 
+              setuptools \
+              unittest-xml-reporting
 
       - name: Show versions
         run: |
