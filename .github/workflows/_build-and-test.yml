@@ -78,6 +78,7 @@ jobs:
               setuptools 
 
       - name: Show versions
+        continue-on-error: true
         run: |
           set -x
           python --version
