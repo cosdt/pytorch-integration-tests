@@ -28,7 +28,7 @@ on:
           - self-hosted
           - npu-arm64
         default: 'self-hosted'
-        description: The runner selected to run on
+        description: 'The runner selected to run on'
       device:
         required: true
         type: choice
@@ -47,10 +47,10 @@ on:
         required: true
         type: choice
         options:
-          - 'ascendai/cann:7.1-openeuler2203sp2'
-          - 'ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9'
+          - ascendai/cann:7.1-openeuler2203sp2
+          - ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9
         default: 'ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9'
-        description: The docker image which will be loaded
+        description: 'The docker image which will be loaded'
 
 concurrency:
   group: ${{ github.workflow }}
