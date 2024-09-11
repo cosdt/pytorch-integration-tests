@@ -94,7 +94,7 @@ jobs:
       - name: Write to workflow job summary
         if: ${{ steps.upload-dist.outputs.artifact-url }}
         run: |
-          echo "### torch_npu built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "## torch_npu built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})." >> $GITHUB_STEP_SUMMARY
 
   test:
@@ -132,6 +132,7 @@ jobs:
           path: /root/build
 
       - name: Install pip dependencies
+        working-directory: /root/build/npu/pytorch
         run: |
           pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
           pip install -r test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
