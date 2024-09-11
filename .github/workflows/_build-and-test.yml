@@ -73,7 +73,7 @@ jobs:
           pip install wheel -i https://pypi.tuna.tsinghua.edu.cn/simple
           pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-      - name: Compile and install torch_npu
+      - name: Build torch_npu
         working-directory: /root/build/npu/pytorch
         run: |
           py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
@@ -141,7 +141,7 @@ jobs:
         working-directory: /root/build/npu/pytorch
         run: |
           pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-          pip install -r test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+          pip install -r test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --no-deps
 
       - name: Install torch_npu
         working-directory: /root/build
@@ -152,5 +152,4 @@ jobs:
         continue-on-error: true
         working-directory: /root/build
         run: |
-          pip install -r npu/pytorch/test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --no-deps
           python npu/pytorch/ci/access_control_test.py
