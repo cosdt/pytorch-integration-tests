@@ -67,11 +67,17 @@ jobs:
           cmake --version
           ninja --version
 
+      - name: Install pip dependencies
+        working-directory: /root/build/npu/pytorch
+        run: |
+          pip install wheel -i https://pypi.tuna.tsinghua.edu.cn/simple
+          pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
       - name: Compile and install torch_npu
         working-directory: /root/build/npu/pytorch
         run: |
-          pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-          bash ci/build.sh --python=`python --version | awk '{print $2}' | cut -d '.' -f 1,2`
+          py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
+          bash ci/build.sh --python=${py_version}
 
       - name: List distribution package
         id: list-dist
