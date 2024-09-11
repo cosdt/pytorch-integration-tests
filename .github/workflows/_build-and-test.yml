@@ -16,46 +16,22 @@ on:
         type: string
         description: The docker image which will be loaded
 
+defaults:
+  run:
+    shell: bash -el {0}
+
 jobs:
   build-and-test:
     name: build and test in ${{ inputs.image }} with ${{ inputs.device }}
     runs-on: ${{ inputs.runner }}
-    defaults:
-      run:
-        shell: bash -el {0}
     container:
       image: ${{ inputs.image }}
-      env:
-        HOME: /root
       volumes:
-        - /usr/local/dcmi:/usr/local/dcmi
-        - /usr/local/bin/npu-smi:/usr/local/bin/npu-smi
-        - /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/
-        - /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info
         - /home/runner/actions-runner/codes:/root/codes
-      options: >-
-        --network host
-        --device ${{ inputs.device }}
-        --device /dev/davinci_manager
-        --device /dev/devmm_svm
-        --device /dev/hisi_hdc
     steps:
-      #- name: Set environment
-      #  run: |
-      #    source /root/.bashrc && conda activate torch_npu
-
       - name: Prepare the codes
         run: |
           cp -rf /root/codes /root/build
-
-      #- name: Compile torch
-      #  working-directory: /root/build/pytorch/pytorch
-      #  run: |
-      #    pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-      #    export _GLIBCXX_USE_CXX11_ABI=0
-      #    export USE_CUDA=0
-      #    export USE_XNNPACK=0
-      #    python setup.py develop
 
       - name: Install system dependencies
         env:
@@ -107,15 +83,18 @@ jobs:
 
       - name: List distribution
         id: list-dist
+        working-directory: /root/build/npu/pytorch
         run: |
           whl_name=$(ls dist/torch_npu*.whl)
+          whl_path=$(pwd)/${whl_name}
           echo "whl_name=${whl_name}" >> $GITHUB_OUTPUT
+          echo "whl_path=${whl_path}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.list-dist.outpus.whl_name }}
-          path: dist/${{ steps.list-dist.outpus.whl_name }}
+          path: ${{ steps.list-dist.outpus.whl_path }}
 
       - name: Do the test
         continue-on-error: true
