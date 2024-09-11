@@ -140,8 +140,10 @@ jobs:
       - name: Install pip dependencies
         working-directory: /root/build/npu/pytorch
         run: |
-          pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-          pip install -r test/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --no-deps
+          pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+          pip install -r requirements.txt
+          pip install -r test/requirements.txt --no-deps
+          pip install unittest-xml-reporting
 
       - name: Install torch_npu
         working-directory: /root/build
@@ -149,7 +151,9 @@ jobs:
           pip install ${{ needs.build.outputs.dist_name }}
 
       - name: Do the test
-        continue-on-error: true
+        continue-on-error: true # Skip if failed
         working-directory: /root/build
         run: |
-          python npu/pytorch/ci/access_control_test.py
+          python npu/pytorch/ci/access_control_test.py --all
+        env:
+          DISABLED_TESTS_FILE=/root/build/npu/pytorch/test/unsupported_test_cases/.pytorch-disabled-tests.json
