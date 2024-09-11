@@ -29,7 +29,7 @@ jobs:
       volumes:
         - /home/runner/actions-runner/codes:/root/codes
     outputs:
-      whl_name: ${{ steps.list-dist.outputs.whl_name }}
+      dist_name: ${{ steps.list-dist.outputs.dist_name }}
     steps:
       - name: Prepare the codes
         run: |
@@ -58,8 +58,7 @@ jobs:
         run: |
           pip install -i https://pypi.tuna.tsinghua.edu.cn/simple \
               wheel \
-              setuptools \
-              unittest-xml-reporting
+              setuptools
 
       - name: Show versions
         run: |
@@ -77,24 +76,24 @@ jobs:
         run: |
           pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
           bash ci/build.sh --python=`python --version | awk '{print $2}' | cut -d '.' -f 1,2`
-          pip install dist/torch_npu*.whl
 
       - name: List distribution package
         id: list-dist
-        working-directory: /root/build/npu/pytorch
+        working-directory: /root/build/npu/pytorch/dist
         run: |
-          whl_name=$(ls dist/torch_npu*.whl)
-          whl_path=$(pwd)/${whl_name}
-          echo "whl_name=${whl_name}" >> $GITHUB_OUTPUT
-          echo "whl_path=${whl_path}" >> $GITHUB_OUTPUT
+          dist_name=$(ls torch_npu*.whl)
+          dist_path=$(pwd)/${dist_name}
+          echo "dist_name=${dist_name}" >> $GITHUB_OUTPUT
+          echo "dist_path=${dist_path}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
         id: upload-dist
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.list-dist.outputs.whl_name }}
-          path: ${{ steps.list-dist.outputs.whl_path }}
+          name: ${{ steps.list-dist.outputs.dist_name }}
+          path: ${{ steps.list-dist.outputs.dist_path }}
+          retention-days: 7
 
       - name: Write to workflow job summary
         if: ${{ steps.upload-dist.outputs.artifact-url }}
@@ -129,7 +128,7 @@ jobs:
       - name: Download distribution artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.build.outputs.whl_name }}
+          name: ${{ needs.build.outputs.dist_name }}
           path: /root/build
 
       - name: Install pip dependencies
@@ -142,7 +141,7 @@ jobs:
       - name: Install torch_npu
         working-directory: /root/build
         run: |
-          pip install ${{ needs.build.outputs.whl_name }}
+          pip install ${{ needs.build.outputs.dist_name }}
 
       - name: Do the test
         continue-on-error: true
