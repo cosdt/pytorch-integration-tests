@@ -105,6 +105,18 @@ jobs:
           bash ci/build.sh --python=`python --version | awk '{print $2}' | cut -d '.' -f 1,2`
           pip install dist/torch_npu*.whl
 
+      - name: List distribution
+        id: list-dist
+        run: |
+          whl_name=$(ls dist/torch_npu*.whl)
+          echo "whl_name=${whl_name}" >> $GITHUB_OUTPUT
+
+      - name: Upload distribution artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.list-dist.outpus.whl_name }}
+          path: dist/${{ steps.list-dist.outpus.whl_name }}
+
       - name: Do the test
         continue-on-error: true
         working-directory: /root/build

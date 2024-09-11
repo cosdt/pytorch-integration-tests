@@ -52,8 +52,9 @@ on:
         default: 'ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9'
         description: 'The docker image which will be loaded'
 
+# Only cancel the previous runs when triggered by a pull request
 concurrency:
-  group: ${{ github.workflow }}
+  group: '${{ github.workflow }}-${{ github.event_name }}'
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
