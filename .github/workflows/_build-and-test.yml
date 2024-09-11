@@ -70,10 +70,6 @@ jobs:
           cmake --version
           ninja --version
 
-      - name: Show NPU info
-        run: |
-          npu-smi info
-
       - name: Compile and install torch_npu
         working-directory: /root/build/npu/pytorch
         run: |
@@ -91,10 +87,16 @@ jobs:
           echo "whl_path=${whl_path}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
+        id: upload-dist
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.list-dist.outpus.whl_name }}
           path: ${{ steps.list-dist.outpus.whl_path }}
+
+      - name: Write to workflow job summary
+        run: |
+          echo "### torch_npu built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})" >> $GITHUB_STEP_SUMMARY
 
       - name: Do the test
         continue-on-error: true
