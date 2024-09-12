@@ -1,6 +1,7 @@
 import os
 
 import torch
+import torch_npu
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, TrainingArguments, Trainer
 from datasets import load_dataset
 from transformers import DataCollatorForLanguageModeling
