@@ -80,6 +80,9 @@ jobs:
     needs:
       - prepare
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Pull latest codes for torch_npu
         uses: ./.github/actions/fetch-and-rebase
         with:
