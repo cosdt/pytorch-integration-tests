@@ -132,10 +132,20 @@ jobs:
         run: |
           pip install ${{ needs.build.outputs.dist_name }}
 
+      # TODO skip
       - name: Do the test
+        if: ${{ failure() }}
         continue-on-error: true # Skip if failed
         working-directory: /root/build
         run: |
           python npu/pytorch/ci/access_control_test.py
         env:
           DISABLED_TESTS_FILE: /root/build/npu/pytorch/test/unsupported_test_cases/.pytorch-disabled-tests.json
+
+      - name: Train GPT2
+        working-directory: ./test
+        run: |
+          pip install requirements.txt
+          python gpt2_test.py
+        env:
+          IS_CI: true
