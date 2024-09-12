@@ -12,7 +12,7 @@ def set_seed(seed=42):
 
 
 # 训练并比较 CPU 和 GPU 的训练损失
-def train_and_compare_gpt2(model_name, dataset_name):
+def train_and_compare_gpt2(model_name):
     set_seed()
 
     def train_on_device(use_cpu=False):
@@ -90,7 +90,7 @@ def train_and_compare_gpt2(model_name, dataset_name):
 def infer_and_compare_gpt2(model_name):
     set_seed()
 
-    def infer_on_device(device):
+    def infer_on_device(device: torch.device):
         # 加载 GPT-2 模型和 tokenizer
         model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
         tokenizer = GPT2Tokenizer.from_pretrained(model_name)
@@ -130,11 +130,10 @@ def infer_and_compare_gpt2(model_name):
 # 主函数
 if __name__ == "__main__":
     model_name = "gpt2"
-    dataset_name = "wikitext"
 
     # 训练并比较训练损失
     print("Comparing Training Loss:")
-    cpu_train_loss, gpu_train_loss = train_and_compare_gpt2(model_name, f"{dataset_name}/wikitext-2-v1")
+    cpu_train_loss, gpu_train_loss = train_and_compare_gpt2(model_name)
 
     # 推理并比较推理损失
     print("\nComparing Inference Loss:")
