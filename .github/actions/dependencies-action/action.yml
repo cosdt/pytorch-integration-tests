@@ -45,14 +45,6 @@ runs:
         cmake --version
         ninja --version
 
-    - name: Install pip dependencies
-      shell: bash
-      run: |
-        pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-        pip install wheel unittest-xml-reporting
-        pip install -r requirements.txt
-        pip install -r test/requirements.txt --no-deps
-
     - name: Install extra pip packages
       if: ${{ inputs.pip_packages != '' }}
       shell: bash
