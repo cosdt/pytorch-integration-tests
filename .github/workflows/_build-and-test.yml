@@ -37,6 +37,9 @@ jobs:
         run: |
           cp -rf /root/codes /root/build
 
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Install dependencies
         uses: ./.github/actions/dependencies-action
         with:
@@ -109,6 +112,9 @@ jobs:
         with:
           name: ${{ needs.build.outputs.dist_name }}
           path: /root/build
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         uses: ./.github/actions/dependencies-action
