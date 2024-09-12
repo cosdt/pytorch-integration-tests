@@ -51,7 +51,7 @@ runs:
       if: ${{ inputs.pip_packages != '' }}
       shell: bash
       run: |
-        packages=$(echo "${{ inputs.pip_packages }}" | tr ',' '\n')
+        packages=$(echo "${{ inputs.pip_packages }}" | tr -d '-' | tr ',' '\n')
 
         while IFS= read -r package; do
           echo "::group::Installing pip package: $package"
@@ -63,7 +63,7 @@ runs:
       if: ${{ inputs.pip_requirements != '' }}
       shell: bash
       run: |
-        requirements=$(echo "${{ inputs.pip_requirements }}" | tr ',' '\n')
+        requirements=$(echo "${{ inputs.pip_requirements }}" | tr -d '-' | tr ',' '\n')
 
         while IFS= read -r requirement; do
           echo "::group::Installing from requirements: $requirement"
