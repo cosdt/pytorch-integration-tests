@@ -149,3 +149,4 @@ jobs:
           python gpt2_test.py
         env:
           IS_CI: true
+          HF_ENDPOINT: https://hf-mirror.com
