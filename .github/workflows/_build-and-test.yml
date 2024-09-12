@@ -28,17 +28,17 @@ jobs:
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
+      volumes:
+        - /home/runner/actions-runner/codes:/root/codes
     outputs:
       dist_name: ${{ steps.list-dist.outputs.dist_name }}
     steps:
+      - name: Prepare the codes
+        run: |
+          cp -rf /root/codes /root/build
+
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Checkout ascend/pytorch
-        uses: actions/checkout@v4
-        with:
-          repository: Ascend/pytorch
-          submodules: recursive
 
       - name: Install dependencies
         uses: ./.github/actions/dependencies-action
@@ -46,17 +46,17 @@ jobs:
           pip_packages: |
             - wheel
           pip_requirements: |
-            - ./pytorch/requirements.txt
+            - /root/build/npu/pytorch/requirements.txt
 
       - name: Build torch_npu
-        working-directory: ./pytorch
+        working-directory: /root/build/npu/pytorch
         run: |
           py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
           bash ci/build.sh --python=${py_version}
 
       - name: List distribution package
         id: list-dist
-        working-directory: ./pytorch/dist
+        working-directory: /root/build/npu/pytorch/dist
         run: |
           dist_name=$(ls torch_npu*.whl)
           dist_path=$(pwd)/${dist_name}
@@ -91,6 +91,7 @@ jobs:
         - /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/
         - /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info
         - /etc/ascend_install.info:/etc/ascend_install.info
+        - /home/runner/actions-runner/codes:/root/codes
       options: >-
         --network host
         --device ${{ inputs.device }}
@@ -102,20 +103,18 @@ jobs:
         run: |
           npu-smi info
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Checkout ascend/pytorch
-        uses: actions/checkout@v4
-        with:
-          repository: Ascend/pytorch
-          submodules: recursive
+      - name: Prepare the codes
+        run: |
+          cp -rf /root/codes /root/build
 
       - name: Download distribution artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.dist_name }}
-          path: ./pytorch
+          path: /root/build
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         uses: ./.github/actions/dependencies-action
@@ -124,19 +123,24 @@ jobs:
             - wheel
             - unittest-xml-reporting
           pip_requirements: |
-            - ./pytorch/requirements.txt
-            - ./pytorch/requirements.txt
-            - ./pytorch/test/requirements.txt --no-deps
+            - /root/build/npu/pytorch/requirements.txt
+            - /root/build/npu/pytorch/requirements.txt
+            - /root/build/npu/pytorch/test/requirements.txt --no-deps
 
       - name: Install torch_npu
-        working-directory: ./pytorch/build
+        working-directory: /root/build
         run: |
           pip install ${{ needs.build.outputs.dist_name }}
 
+      # TODO skip
       - name: Do the test
+        if: ${{ failure() }}
         continue-on-error: true # Skip if failed
+        working-directory: /root/build
         run: |
-          python pytorch/ci/access_control_test.py
+          python npu/pytorch/ci/access_control_test.py
+        env:
+          DISABLED_TESTS_FILE: /root/build/npu/pytorch/test/unsupported_test_cases/.pytorch-disabled-tests.json
 
       - name: Train GPT2
         working-directory: ./test

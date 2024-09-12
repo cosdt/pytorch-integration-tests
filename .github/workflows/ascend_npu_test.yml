@@ -74,10 +74,24 @@ jobs:
           echo "device=${{ github.event.inputs.device || '/dev/davinci6' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9' }}" >> $GITHUB_OUTPUT
 
+  fetch-and-rebase:
+    name: Fetch and rebase
+    runs-on: ${{ needs.prepare.outputs.runner }}
+    needs:
+      - prepare
+    steps:
+      - name: Pull latest codes for torch_npu
+        uses: ./.github/actions/fetch-and-rebase
+        with:
+          repo_path: /home/runner/actions-runner/codes/npu/pytorch
+          remote_branch: upstream/master
+          loop: 10
+
   build-and-test:
     name: Build and test
     needs:
       - prepare
+      - fetch-and-rebase
     uses: ./.github/workflows/_build-and-test.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
