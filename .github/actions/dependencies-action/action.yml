@@ -3,11 +3,13 @@ description: Install OS and pip dependencies
 
 inputs:
   pip_packages:
-    description: The pip packages to install
+    description: List of pip packages to install
     required: false
+    default: ''
   pip_requirements:
-    description: The pip requirements.txt to install
+    description: List of requirements files to install
     required: false
+    default: ''
 
 runs:
   using: composite
@@ -51,22 +53,24 @@ runs:
       if: ${{ inputs.pip_packages != '' }}
       shell: bash
       run: |
-        packages=$(echo "${{ inputs.pip_packages }}" | tr -d '-' | tr ',' '\n')
-
-        while IFS= read -r package; do
-          echo "::group::Installing pip package: $package"
-          pip install $package -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-          echo "::endgroup::"
-        done <<< "$packages"
+        echo "${{ inputs.pip_packages }}" | while read -r package; do
+          package="${package#- }"
+          if [ -n "$(echo "$package" | xargs)" ]; then
+            echo "::group::Installing pip package: $package"
+            pip install $package -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+            echo "::endgroup::"
+          fi
+        done
 
     - name: Install extra pip requirements
       if: ${{ inputs.pip_requirements != '' }}
       shell: bash
       run: |
-        requirements=$(echo "${{ inputs.pip_requirements }}" | tr -d '-' | tr ',' '\n')
-
-        while IFS= read -r requirement; do
-          echo "::group::Installing from requirements: $requirement"
-          pip install -r $requirement -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-          echo "::endgroup::"
-        done <<< "$requirements"
+        echo "${{ inputs.pip_requirements }}" | while read -r requirement; do
+          requirement="${requirement#- }"
+          if [ -n "$(echo "$requirement" | xargs)" ]; then
+            echo "::group::Installing from requirements: $requirement"
+            pip install -r $requirement -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+            echo "::endgroup::"
+          fi
+        done
