@@ -13,6 +13,7 @@ runs:
   using: composite
   steps:
     - name: Install system dependencies
+      shell: bash
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -27,11 +28,13 @@ runs:
             ninja-build
 
     - name: Create symlinks for gcc and g++
+      shell: bash
       run: |
         ln -s /usr/bin/gcc-10 /usr/bin/gcc
         ln -s /usr/bin/g++-10 /usr/bin/g++
 
     - name: Show versions
+      shell: bash
       run: |
         set -x
         python --version
@@ -43,6 +46,7 @@ runs:
         ninja --version
 
     - name: Install pip dependencies
+      shell: bash
       run: |
         pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
         pip install wheel unittest-xml-reporting
@@ -51,6 +55,7 @@ runs:
 
     - name: Install extra pip packages
       if: ${{ inputs.pip_packages != '' }}
+      shell: bash
       run: |
         packages=$(echo "${{ inputs.pip_packages }}" | tr ',' '\n')
 
@@ -61,6 +66,7 @@ runs:
 
     - name: Install extra pip requirements
       if: ${{ inputs.pip_requirements != '' }}
+      shell: bash
       run: |
         requirements=$(echo "${{ inputs.pip_requirements }}" | tr ',' '\n')
 
