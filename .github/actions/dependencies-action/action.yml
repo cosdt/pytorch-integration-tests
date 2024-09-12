@@ -1,0 +1,70 @@
+name: Install dependencies
+description: Install OS and pip dependencies
+
+inputs:
+  pip_packages:
+    description: The pip packages to install
+    required: false
+  pip_requirements:
+    description: The pip requirements.txt to install
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install system dependencies
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+        apt update
+        apt install --no-install-recommends -y \
+            git \
+            gcc-10 \
+            g++-10 \
+            make \
+            cmake \
+            ninja-build
+
+    - name: Create symlinks for gcc and g++
+      run: |
+        ln -s /usr/bin/gcc-10 /usr/bin/gcc
+        ln -s /usr/bin/g++-10 /usr/bin/g++
+
+    - name: Show versions
+      run: |
+        set -x
+        python --version
+        pip --version
+        gcc --version
+        g++ --version
+        make --version
+        cmake --version
+        ninja --version
+
+    - name: Install pip dependencies
+      run: |
+        pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+        pip install wheel unittest-xml-reporting
+        pip install -r requirements.txt
+        pip install -r test/requirements.txt --no-deps
+
+    - name: Install extra pip packages
+      if: ${{ inputs.pip_packages != '' }}
+      run: |
+        packages=$(echo "${{ inputs.pip_packages }}" | tr ',' '\n')
+
+        while IFS= read -r package; do
+          echo "Installing pip package: $package"
+          pip install $package -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+        done <<< "$packages"
+
+    - name: Install extra pip requirements
+      if: ${{ inputs.pip_requirements != '' }}
+      run: |
+        requirements=$(echo "${{ inputs.pip_requirements }}" | tr ',' '\n')
+
+        while IFS= read -r requirement; do
+          echo "Installing from requirements: $requirement"
+          pip install -r $requirement -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+        done <<< "$requirements"
