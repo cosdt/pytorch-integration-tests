@@ -1,3 +1,18 @@
+# An action for installing dependencies. You can set
+# custom pip dependencies as following:
+#
+# Usage:
+#
+# - name: Install dependencies
+#   uses: ./.github/actions/dependencies-action
+#   with:
+#     pip_packages: |
+#       - torch
+#       - triton
+#     pip_requirements: |
+#       - /path/a/requirements.txt
+#       - /path/b/requirements.txt --no-deps
+
 name: Install dependencies
 description: Install OS and pip dependencies
 
