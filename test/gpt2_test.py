@@ -25,8 +25,8 @@ def train_and_compare_gpt2(model_name):
         tokenizer.pad_token = tokenizer.eos_token  # GPT-2 没有 pad_token，需要将 eos_token 作为 pad_token
 
         # 加载 wikitext-2 数据集
-        train_dataset = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
-        val_dataset = load_dataset('wikitext', 'wikitext-2-raw-v1', split='validation')
+        train_dataset = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train', verification_mode="no_checks")
+        val_dataset = load_dataset('wikitext', 'wikitext-2-raw-v1', split='validation', verification_mode="no_checks")
 
         def preprocess_function(examples):
             return tokenizer(examples['text'], padding="max_length", truncation=True, max_length=128)
