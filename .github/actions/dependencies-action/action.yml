@@ -29,6 +29,7 @@ inputs:
 runs:
   using: composite
   steps:
+    # TODO(shink): Remove this step after building devel images
     - name: Install system dependencies
       shell: bash
       env:

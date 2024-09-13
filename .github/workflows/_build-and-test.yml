@@ -124,7 +124,6 @@ jobs:
             - unittest-xml-reporting
           pip_requirements: |
             - /root/build/npu/pytorch/requirements.txt
-            - /root/build/npu/pytorch/requirements.txt
             - /root/build/npu/pytorch/test/requirements.txt --no-deps
 
       - name: Install torch_npu
@@ -146,6 +145,7 @@ jobs:
         working-directory: ./test
         run: |
           pip install -r requirements.txt
+          pip install accelerate -U
           python gpt2_test.py
         env:
           IS_CI: true
