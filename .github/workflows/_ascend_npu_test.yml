@@ -31,8 +31,6 @@ jobs:
   test:
     name: test torch_npu in ${{ inputs.image }} with ${{ inputs.device }}
     runs-on: ${{ inputs.runner }}
-    needs:
-      - build
     container:
       image: ${{ inputs.image }}
       volumes:

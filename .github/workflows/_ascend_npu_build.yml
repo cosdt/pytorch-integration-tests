@@ -13,7 +13,7 @@ on:
         description: 'The docker image which will be used to build'
     outputs:
       artifact_name:
-        description: 'The result of the called workflow'
+        description: 'The torch_npu distribution artifact name'
         value: ${{ jobs.build.outputs.dist_name }}
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
