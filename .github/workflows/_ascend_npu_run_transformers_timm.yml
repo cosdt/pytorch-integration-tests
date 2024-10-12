@@ -1,4 +1,4 @@
-name: '_ascend_npu_test'
+name: '_ascend_npu_transformers_timm'
 
 on:
   workflow_call:
@@ -29,7 +29,7 @@ defaults:
 
 jobs:
   test:
-    name: test torch_npu in ${{ inputs.image }} with ${{ inputs.device }}
+    name: run transformers timm in ${{ inputs.image }} with ${{ inputs.device }}
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
@@ -51,39 +51,8 @@ jobs:
         run: |
           npu-smi info
 
-      - name: Prepare the codes
-        run: |
-          cp -rf /root/codes /root/build
-
       - name: Download distribution artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifact_name }}
           path: /root/build
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        uses: ./.github/actions/dependencies-action
-        with:
-          pip_packages: |
-            - wheel
-            - unittest-xml-reporting
-          pip_requirements: |
-            - /root/build/npu/pytorch/requirements.txt
-            - /root/build/npu/pytorch/test/requirements.txt --no-deps
-
-      - name: Install torch_npu
-        working-directory: /root/build
-        run: |
-          pip install ${{ inputs.artifact_name }}
-
-      # TODO(shink): Skip
-      - name: Do the test
-        continue-on-error: true
-        working-directory: /root/build
-        run: |
-          python npu/pytorch/ci/access_control_test.py
-        env:
-          DISABLED_TESTS_FILE: /root/build/npu/pytorch/test/unsupported_test_cases/.pytorch-disabled-tests.json

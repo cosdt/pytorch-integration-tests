@@ -29,6 +29,15 @@ on:
           - npu-arm64
         default: 'self-hosted'
         description: 'The runner selected to run on'
+      image:
+        required: true
+        type: choice
+        options:
+          - ascendai/cann:7.1-openeuler2203sp2
+          - ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9
+          - ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9
+        default: 'ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9'
+        description: 'The docker image which will be loaded'
       device:
         required: true
         type: choice
@@ -43,15 +52,6 @@ on:
           - /dev/davinci8
         default: '/dev/davinci6'
         description: 'The device selected to run on'
-      image:
-        required: true
-        type: choice
-        options:
-          - ascendai/cann:7.1-openeuler2203sp2
-          - ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9
-          - ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9
-        default: 'ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9'
-        description: 'The docker image which will be loaded'
 
 # Only cancel the previous runs when triggered by a pull request
 concurrency:
@@ -64,8 +64,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       runner: ${{ steps.set-param.outputs.runner }}
-      device: ${{ steps.set-param.outputs.device }}
       image: ${{ steps.set-param.outputs.image }}
+      device: ${{ steps.set-param.outputs.device }}
     steps:
       - name: Set param
         id: set-param
@@ -107,34 +107,54 @@ jobs:
     uses: ./.github/workflows/_ascend_npu_test.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
-      device: ${{ needs.prepare.outputs.device }}
       image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
       artifact_name: ${{ needs.build.outputs.artifact_name }}
 
-#  pytorch-examples:
-#    name: Run PyTorch examples
-#    needs:
-#      - prepare
-#      - build
-#    runs-on: ${{ needs.prepare.outputs.runner }}
-#
-#  pytorch-benchmark:
-#    name: Run PyTorch benchmark
-#    needs:
-#      - prepare
-#      - build
-#    runs-on: ${{ needs.prepare.outputs.runner }}
-#
-#  transformers-examples:
-#    name: Run transformers examples
-#    needs:
-#      - prepare
-#      - build
-#    runs-on: ${{ needs.prepare.outputs.runner }}
-#
-#  transformers-timm:
-#    name: Run PyTorch examples
-#    needs:
-#      - prepare
-#      - build
-#    runs-on: ${{ needs.prepare.outputs.runner }}
+  pytorch-examples:
+    name: Run PyTorch examples
+    needs:
+      - prepare
+      - test
+    uses: ./.github/workflows/_ascend_npu_run_pytorch_examples.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
+
+  pytorch-benchmark:
+    name: Run PyTorch benchmark
+    needs:
+      - prepare
+      - pytorch-examples
+    uses: ./.github/workflows/_ascend_npu_run_pytorch_benchmark.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
+
+  transformers-examples:
+    name: Run transformers examples
+    needs:
+      - prepare
+      - pytorch-benchmark
+    uses: ./.github/workflows/_ascend_npu_run_transformers_examples.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
+
+  transformers-timm:
+    name: Run PyTorch image models(timm)
+    needs:
+      - prepare
+      - transformers-examples
+    uses: ./.github/workflows/_ascend_npu_run_transformers_timm.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}

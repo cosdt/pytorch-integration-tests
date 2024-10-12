@@ -76,7 +76,9 @@ jobs:
         with:
           name: ${{ steps.list-dist.outputs.dist_name }}
           path: ${{ steps.list-dist.outputs.dist_path }}
+          if-no-files-found: error
           retention-days: 1
+          overwrite: true
 
       - name: Write to workflow job summary
         if: ${{ steps.upload-dist.outputs.artifact-url }}
