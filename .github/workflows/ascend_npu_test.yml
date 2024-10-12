@@ -55,7 +55,7 @@ on:
 
 # Only cancel the previous runs when triggered by a pull request
 concurrency:
-  group: '${{ github.workflow }}-${{ github.event_name }}'
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -75,6 +75,7 @@ jobs:
           echo "device=${{ github.event.inputs.device || '/dev/davinci6' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9' }}" >> $GITHUB_OUTPUT
 
+  # TODO(shink): remove this job, use actions/checkout instead
   fetch-and-rebase:
     name: Fetch and rebase
     runs-on: ${{ needs.prepare.outputs.runner }}
@@ -88,13 +89,52 @@ jobs:
           remote_branch: upstream/master
           loop: 10
 
-  build-and-test:
-    name: Build and test
+  build:
+    name: Build torch_npu
     needs:
       - prepare
       - fetch-and-rebase
-    uses: ./.github/workflows/_build-and-test.yml
+    uses: ./.github/workflows/_ascend_npu_build.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+
+  test:
+    name: Test torch_npu
+    needs:
+      - prepare
+      - build
+    uses: ./.github/workflows/_ascend_npu_test.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       device: ${{ needs.prepare.outputs.device }}
       image: ${{ needs.prepare.outputs.image }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
+
+#  pytorch-examples:
+#    name: Run PyTorch examples
+#    needs:
+#      - prepare
+#      - build
+#    runs-on: ${{ needs.prepare.outputs.runner }}
+#
+#  pytorch-benchmark:
+#    name: Run PyTorch benchmark
+#    needs:
+#      - prepare
+#      - build
+#    runs-on: ${{ needs.prepare.outputs.runner }}
+#
+#  transformers-examples:
+#    name: Run transformers examples
+#    needs:
+#      - prepare
+#      - build
+#    runs-on: ${{ needs.prepare.outputs.runner }}
+#
+#  transformers-timm:
+#    name: Run PyTorch examples
+#    needs:
+#      - prepare
+#      - build
+#    runs-on: ${{ needs.prepare.outputs.runner }}

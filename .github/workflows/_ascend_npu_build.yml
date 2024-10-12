@@ -1,0 +1,83 @@
+name: '_ascend_npu_build'
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        required: true
+        type: string
+        description: 'The runner selected to run on'
+      image:
+        required: true
+        type: string
+        description: 'The docker image which will be used to build'
+    outputs:
+      artifact_name:
+        description: 'The result of the called workflow'
+        value: ${{ steps.list-dist.outputs.dist_name }}
+
+# Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
+# declared as "shell: bash -el {0}" on steps that need to be properly activated.
+# It's used to activate ascend-toolkit environment variables.
+defaults:
+  run:
+    shell: bash -el {0}
+
+jobs:
+  build:
+    name: build torch_npu
+    runs-on: ${{ inputs.runner }}
+    container:
+      image: ${{ inputs.image }}
+      volumes:
+        - /home/runner/actions-runner/codes:/root/codes
+    steps:
+      - name: Prepare the codes
+        run: |
+          cp -rf /root/codes /root/build
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/dependencies-action
+        with:
+          pip_packages: |
+            - wheel
+          pip_requirements: |
+            - /root/build/npu/pytorch/requirements.txt
+
+      - name: List Python version
+        id: list-py-version
+        run: |
+          py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
+          echo "py_version=${py_version}" >> $GITHUB_OUTPUT
+
+      - name: Build torch_npu
+        working-directory: /root/build/npu/pytorch
+        run: |
+          bash ci/build.sh --python=${{ steps.list-py-version.outputs.py_version }}
+
+      - name: List distribution package
+        id: list-dist
+        working-directory: /root/build/npu/pytorch/dist
+        run: |
+          dist_name=$(ls torch_npu*.whl)
+          dist_path=$(pwd)/${dist_name}
+          echo "dist_name=${dist_name}" >> $GITHUB_OUTPUT
+          echo "dist_path=${dist_path}" >> $GITHUB_OUTPUT
+
+      - name: Upload distribution artifact
+        id: upload-dist
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.list-dist.outputs.dist_name }}
+          path: ${{ steps.list-dist.outputs.dist_path }}
+          retention-days: 1
+
+      - name: Write to workflow job summary
+        if: ${{ steps.upload-dist.outputs.artifact-url }}
+        run: |
+          echo "## torch_npu built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})." >> $GITHUB_STEP_SUMMARY
