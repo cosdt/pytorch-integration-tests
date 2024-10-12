@@ -14,7 +14,7 @@ on:
     outputs:
       artifact_name:
         description: 'The result of the called workflow'
-        value: ${{ steps.list-dist.outputs.dist_name }}
+        value: ${{ jobs.build.outputs.dist_name }}
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
 # declared as "shell: bash -el {0}" on steps that need to be properly activated.
@@ -31,6 +31,8 @@ jobs:
       image: ${{ inputs.image }}
       volumes:
         - /home/runner/actions-runner/codes:/root/codes
+    outputs:
+      dist_name: ${{ steps.list-dist.outputs.dist_name }}
     steps:
       - name: Prepare the codes
         run: |
