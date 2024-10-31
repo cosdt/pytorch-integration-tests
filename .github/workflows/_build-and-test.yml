@@ -123,6 +123,7 @@ jobs:
           pip_packages: |
             - wheel
             - unittest-xml-reporting
+            - importlib-metadata
           pip_requirements: |
             - /root/build/npu/pytorch/requirements.txt
             - /root/build/npu/pytorch/test/requirements.txt --no-deps
