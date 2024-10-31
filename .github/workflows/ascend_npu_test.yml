@@ -112,47 +112,11 @@ jobs:
       artifact_name: ${{ needs.build.outputs.artifact_name }}
 
   pytorch-examples:
-    name: Run PyTorch examples
+    name: Run models
     needs:
       - prepare
       - test
     uses: ./.github/workflows/_ascend_npu_run_pytorch_examples.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
-
-  pytorch-benchmark:
-    name: Run PyTorch benchmark
-    needs:
-      - prepare
-      - pytorch-examples
-    uses: ./.github/workflows/_ascend_npu_run_pytorch_benchmark.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
-
-  transformers-examples:
-    name: Run transformers examples
-    needs:
-      - prepare
-      - pytorch-benchmark
-    uses: ./.github/workflows/_ascend_npu_run_transformers_examples.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
-
-  transformers-timm:
-    name: Run PyTorch image models(timm)
-    needs:
-      - prepare
-      - transformers-examples
-    uses: ./.github/workflows/_ascend_npu_run_transformers_timm.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
