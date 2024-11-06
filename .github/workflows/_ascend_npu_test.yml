@@ -39,7 +39,6 @@ jobs:
         - /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/
         - /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info
         - /etc/ascend_install.info:/etc/ascend_install.info
-        - /home/runner/actions-runner/codes:/root/codes
       options: >-
         --network host
         --device ${{ inputs.device }}
@@ -51,39 +50,46 @@ jobs:
         run: |
           npu-smi info
 
-      - name: Prepare the codes
+      - name: Install system dependencies
         run: |
-          cp -rf /root/codes /root/build
+          sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+          apt update
+          apt install --no-install-recommends -y git gcc g++ make cmake ninja-build
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout torch_npu
+        uses: actions/checkout@v4
+        with:
+          # TODO(shink): Use Ascend/pytorch once this pr merged:
+          # https://gitee.com/ascend/pytorch/pulls/12854
+          # repository: Ascend/pytorch
+          repository: shink/torchnpu
+          ref: feat/autoload
+          submodules: recursive
+          path: torch_npu
 
       - name: Download distribution artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifact_name }}
-          path: /root/build
+          path: torch_npu
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        uses: ./.github/actions/dependencies-action
-        with:
-          pip_packages: |
-            - wheel
-            - unittest-xml-reporting
-          pip_requirements: |
-            - /root/build/npu/pytorch/requirements.txt
-            - /root/build/npu/pytorch/test/requirements.txt --no-deps
+      - name: Install pip dependencies
+        working-directory: torch_npu
+        run: |
+          pip install wheel unittest-xml-reporting
+          pip install -r requirements.txt
+          pip install -r test/requirements.txt --no-deps
 
       - name: Install torch_npu
-        working-directory: /root/build
+        working-directory: torch_npu
         run: |
           pip install ${{ inputs.artifact_name }}
 
       # TODO(shink): Skip
       - name: Do the test
         continue-on-error: true
-        working-directory: /root/build
         run: |
-          python npu/pytorch/ci/access_control_test.py
-        env:
-          DISABLED_TESTS_FILE: /root/build/npu/pytorch/test/unsupported_test_cases/.pytorch-disabled-tests.json
+          python torch_npu/ci/access_control_test.py
