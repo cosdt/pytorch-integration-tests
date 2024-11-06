@@ -29,7 +29,6 @@ inputs:
 runs:
   using: composite
   steps:
-    # TODO(shink): Remove this step after building devel images
     - name: Install system dependencies
       shell: bash
       env:
@@ -40,18 +39,12 @@ runs:
         apt update
         apt install --no-install-recommends -y \
             git \
-            gcc-10 \
-            g++-10 \
+            gcc \
+            g++ \
             make \
             cmake \
             ninja-build
         echo "::endgroup::"
-
-    - name: Create symlinks for gcc and g++
-      shell: bash
-      run: |
-        ln -s /usr/bin/gcc-10 /usr/bin/gcc
-        ln -s /usr/bin/g++-10 /usr/bin/g++
 
     - name: Show versions
       shell: bash

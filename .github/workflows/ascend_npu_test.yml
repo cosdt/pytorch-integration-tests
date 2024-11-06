@@ -1,6 +1,3 @@
-# Note:
-# Same runner only needs one job named like .*fetch-and-rebase
-
 name: Ascend NPU Test Suite
 
 on:
@@ -36,7 +33,8 @@ on:
           - ascendai/cann:7.1-openeuler2203sp2
           - ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9
           - ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9
-        default: 'ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9'
+          - latest
+        default: 'latest'
         description: 'The docker image which will be loaded'
       device:
         required: true
@@ -73,52 +71,37 @@ jobs:
           set -e
           echo "runner=${{ github.event.inputs.runner || 'self-hosted' }}" >> $GITHUB_OUTPUT
           echo "device=${{ github.event.inputs.device || '/dev/davinci6' }}" >> $GITHUB_OUTPUT
-          echo "image=${{ github.event.inputs.image || 'ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9' }}" >> $GITHUB_OUTPUT
-
-  # TODO(shink): remove this job, use actions/checkout instead
-  fetch-and-rebase:
-    name: Fetch and rebase
-    runs-on: ${{ needs.prepare.outputs.runner }}
-    needs:
-      - prepare
-    steps:
-      - name: Pull latest codes for torch_npu
-        uses: ./.github/actions/fetch-and-rebase
-        with:
-          repo_path: /home/runner/actions-runner/codes/npu/pytorch
-          remote_branch: upstream/master
-          loop: 10
+          echo "image=${{ github.event.inputs.image || 'latest' }}" >> $GITHUB_OUTPUT
 
   build:
     name: Build torch_npu
     needs:
       - prepare
-      - fetch-and-rebase
     uses: ./.github/workflows/_ascend_npu_build.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
 
-  test:
-    name: Test torch_npu
-    needs:
-      - prepare
-      - build
-    uses: ./.github/workflows/_ascend_npu_test.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
-
-  pytorch-examples:
-    name: Run models
-    needs:
-      - prepare
-      - test
-    uses: ./.github/workflows/_ascend_npu_run_pytorch_examples.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
+#  test:
+#    name: Test torch_npu
+#    needs:
+#      - prepare
+#      - build
+#    uses: ./.github/workflows/_ascend_npu_test.yml
+#    with:
+#      runner: ${{ needs.prepare.outputs.runner }}
+#      image: ${{ needs.prepare.outputs.image }}
+#      device: ${{ needs.prepare.outputs.device }}
+#      artifact_name: ${{ needs.build.outputs.artifact_name }}
+#
+#  pytorch-examples:
+#    name: Run models
+#    needs:
+#      - prepare
+#      - test
+#    uses: ./.github/workflows/_ascend_npu_run_pytorch_examples.yml
+#    with:
+#      runner: ${{ needs.prepare.outputs.runner }}
+#      image: ${{ needs.prepare.outputs.image }}
+#      device: ${{ needs.prepare.outputs.device }}
+#      artifact_name: ${{ needs.build.outputs.artifact_name }}

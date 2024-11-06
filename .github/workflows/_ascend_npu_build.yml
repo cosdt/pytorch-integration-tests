@@ -29,40 +29,46 @@ jobs:
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
-      volumes:
-        - /home/runner/actions-runner/codes:/root/codes
     outputs:
       dist_name: ${{ steps.list-dist.outputs.dist_name }}
     steps:
-      - name: Prepare the codes
-        run: |
-          cp -rf /root/codes /root/build
+      - name: Install system dependencies
+        uses: ./.github/actions/dependencies-action
 
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        uses: ./.github/actions/dependencies-action
+      - name: Checkout torch_npu
+        uses: actions/checkout@v4
         with:
-          pip_packages: |
-            - wheel
-          pip_requirements: |
-            - /root/build/npu/pytorch/requirements.txt
+          # TODO(shink): Use ascend/pytorch once this pr merged:
+          # https://gitee.com/ascend/pytorch/pulls/12854
+          repo: shink/torchnpu
+          ref: feat/autoload
+          submodules: recursive
+          path: torch_npu
+
+      - name: Install pip dependencies
+        working-directory: torch_npu
+        run: |
+          pip install wheel
+          pip install -r requirements.txt
 
       - name: List Python version
         id: list-py-version
+        working-directory: torch_npu
         run: |
           py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
           echo "py_version=${py_version}" >> $GITHUB_OUTPUT
 
       - name: Build torch_npu
-        working-directory: /root/build/npu/pytorch
+        working-directory: torch_npu
         run: |
           bash ci/build.sh --python=${{ steps.list-py-version.outputs.py_version }}
 
       - name: List distribution package
         id: list-dist
-        working-directory: /root/build/npu/pytorch/dist
+        working-directory: torch_npu/dist
         run: |
           dist_name=$(ls torch_npu*.whl)
           dist_path=$(pwd)/${dist_name}
