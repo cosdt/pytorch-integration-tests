@@ -43,7 +43,7 @@ jobs:
         with:
           # TODO(shink): Use ascend/pytorch once this pr merged:
           # https://gitee.com/ascend/pytorch/pulls/12854
-          repo: shink/torchnpu
+          repository: shink/torchnpu
           ref: feat/autoload
           submodules: recursive
           path: torch_npu
