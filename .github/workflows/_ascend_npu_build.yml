@@ -42,8 +42,7 @@ jobs:
               gcc \
               g++ \
               make \
-              cmake \
-              ninja-build
+              cmake
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,8 +50,9 @@ jobs:
       - name: Checkout torch_npu
         uses: actions/checkout@v4
         with:
-          # TODO(shink): Use ascend/pytorch once this pr merged:
+          # TODO(shink): Use Ascend/pytorch once this pr merged:
           # https://gitee.com/ascend/pytorch/pulls/12854
+          # repository: Ascend/pytorch
           repository: shink/torchnpu
           ref: feat/autoload
           submodules: recursive
