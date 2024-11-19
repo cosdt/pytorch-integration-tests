@@ -93,3 +93,15 @@ jobs:
       image: ${{ needs.prepare.outputs.image }}
       device: ${{ needs.prepare.outputs.device }}
       artifact_name: ${{ needs.build.outputs.artifact_name }}
+
+  benchmark:
+    name: Run benchmarks
+    needs:
+      - prepare
+      - build
+    uses: ./.github/workflows/_ascend_npu_test.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
