@@ -99,7 +99,7 @@ jobs:
     needs:
       - prepare
       - build
-    uses: ./.github/workflows/_ascend_npu_test.yml
+    uses: ./.github/workflows/_ascend_npu_benchmark.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
