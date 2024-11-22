@@ -79,6 +79,7 @@ jobs:
           # repository: pytorch/benchmark
           repository: shink/benchmark
           ref: test
+          path: benchmark
 
       - name: Install benchmark dependencies
         working-directory: benchmark
