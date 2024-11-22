@@ -70,6 +70,33 @@ jobs:
         run: |
           pip install ${{ inputs.artifact_name }}
 
-      - name: Run benchmarks
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # TODO(shink): Use pytorch/benchmark once following PRs merged:
+          # https://github.com/pytorch/benchmark/pull/2545
+          # https://github.com/pytorch/benchmark/pull/2546
+          # repository: pytorch/benchmark
+          repository: shink/benchmark
+          ref: test
+
+      - name: Install benchmark dependencies
+        working-directory: benchmark
         run: |
-          python -c "import torch; print(torch.npu.is_available())"
+          pip install -r requirements.txt
+          python install.py --userbenchmark test_bench
+
+      - name: Run benchmarks
+        working-directory: benchmark
+        run: |
+          python run_benchmark.py test_bench --latencies --device npu --test train,eval --output ascend_npu_benchmark.json
+
+      - name: Upload the output file
+        id: upload-output
+        uses: actions/upload-artifact@v4
+        with:
+          name: ascend_npu_benchmark.json
+          path: ascend_npu_benchmark.json
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
