@@ -89,8 +89,10 @@ jobs:
 
       - name: Run benchmarks
         working-directory: benchmark
-        run: |
-          python run_benchmark.py test_bench --latencies --device npu --test train,eval --output ascend_npu_benchmark.json
+        run: >
+          python run_benchmark.py test_bench --accuracy --device npu --test eval
+              --models BERT_pytorch hf_GPT2
+              --output ascend_npu_benchmark.json
 
       - name: Upload the output file
         id: upload-output
