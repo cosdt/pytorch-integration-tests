@@ -91,7 +91,7 @@ jobs:
         working-directory: benchmark
         run: >
           python run_benchmark.py test_bench --accuracy --device npu --test eval
-              --models BERT_pytorch hf_GPT2
+              --models BERT_pytorch,hf_GPT2
               --output ascend_npu_benchmark.json
 
       - name: Upload the output file
