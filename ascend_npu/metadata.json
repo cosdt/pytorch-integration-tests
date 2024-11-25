@@ -1,0 +1,11 @@
+{
+  "device": "npu",
+  "test": [
+    "train",
+    "eval"
+  ],
+  "models": [
+    "BERT_pytorch",
+    "hf_GPT2"
+  ]
+}

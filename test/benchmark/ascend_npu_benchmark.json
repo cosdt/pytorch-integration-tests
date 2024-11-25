@@ -1,0 +1,11 @@
+{
+    "name": "test_bench",
+    "environ": {
+        "pytorch_git_version": "dd2e6d61409aac22198ec771560a38adb0018ba2",
+        "pytorch_version": "2.6.0.dev20241120"
+    },
+    "metrics": {
+        "model=BERT_pytorch, test=eval, device=npu, bs=None, extra_args=['--accuracy'], metric=accuracy": "pass",
+        "model=hf_GPT2, test=eval, device=npu, bs=None, extra_args=['--accuracy'], metric=accuracy": "pass"
+    }
+}
