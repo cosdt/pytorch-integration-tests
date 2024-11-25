@@ -85,7 +85,7 @@ jobs:
         working-directory: benchmark
         run: |
           pip install -r requirements.txt
-          python install.py --userbenchmark test_bench
+          python install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
 
       - name: Run benchmarks
         working-directory: benchmark
