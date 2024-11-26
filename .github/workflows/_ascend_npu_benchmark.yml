@@ -71,6 +71,7 @@ jobs:
         run: |
           curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
           pip install -r requirements.txt
+          echo $(pwd)
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -83,6 +84,7 @@ jobs:
 
       - name: Install benchmark dependencies
         run: |
+          echo $(pwd)
           pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt
           python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2 --constraint ascend_npu/requirements.txt
 
