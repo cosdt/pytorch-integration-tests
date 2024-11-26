@@ -69,6 +69,10 @@ jobs:
         working-directory: ascend_npu
         run: |
           pip install ${{ inputs.artifact_name }}
+          npu_is_available=$(python -c "import torch; print(torch.npu.is_available()")
+          npu_count=$(python -c "import torch; print(torch.npu.device_count()")
+          echo "npu is available: ${npu_is_available}"
+          echo "npu count: ${npu_count}"
 
       - name: Checkout benchmark
         uses: actions/checkout@v4
