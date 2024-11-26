@@ -67,11 +67,10 @@ jobs:
 
       - name: Install torch_npu dependencies
         run: |
-          mkdir ascend_npu
-          curl -fsSL -o ascend_npu/requirements.txt https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
-          pip install -r ascend_npu/requirements.txt
           echo $(pwd)
           echo $(ls -la)
+          curl -fsSL -o ascend_npu/requirements.txt https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
+          pip install -r ascend_npu/requirements.txt
 
       - name: Checkout
         uses: actions/checkout@v4
