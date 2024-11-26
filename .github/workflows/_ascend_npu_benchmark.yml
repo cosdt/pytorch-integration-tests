@@ -83,6 +83,7 @@ jobs:
 
       - name: Install benchmark dependencies
         run: |
+          ls -al ascend_npu
           pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt
           python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
 
