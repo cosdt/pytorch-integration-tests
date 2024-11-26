@@ -70,7 +70,6 @@ jobs:
       - name: Install torch_npu
         working-directory: ascend_npu
         run: |
-#          pip install ${{ inputs.artifact_name }}
           pip install torch-npu --index-url https://pypi.org/simple/
 
       - name: Install torch_npu dependencies
