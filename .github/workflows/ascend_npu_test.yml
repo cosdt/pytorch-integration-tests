@@ -73,14 +73,14 @@ jobs:
           echo "device=${{ github.event.inputs.device || '/dev/davinci4' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:latest' }}" >> $GITHUB_OUTPUT
 
-#  build:
-#    name: Build torch_npu
-#    needs:
-#      - prepare
-#    uses: ./.github/workflows/_ascend_npu_build.yml
-#    with:
-#      runner: ${{ needs.prepare.outputs.runner }}
-#      image: ${{ needs.prepare.outputs.image }}
+  build:
+    name: Build torch_npu
+    needs:
+      - prepare
+    uses: ./.github/workflows/_ascend_npu_build.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
 
 #  test:
 #    name: Test torch_npu
@@ -98,9 +98,10 @@ jobs:
     name: Run benchmarks
     needs:
       - prepare
+      - build
     uses: ./.github/workflows/_ascend_npu_benchmark.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
       device: ${{ needs.prepare.outputs.device }}
-      artifact_name: 'torch_npu-2.6.0+git69ceea7-cp310-cp310-linux_aarch64.whl'
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
