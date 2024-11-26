@@ -70,15 +70,10 @@ jobs:
         run: |
           pip install ${{ inputs.artifact_name }}
 
-      - name: Checkout
+      - name: Checkout benchmark
         uses: actions/checkout@v4
         with:
-          # TODO(shink): Use pytorch/benchmark once following PRs merged:
-          # https://github.com/pytorch/benchmark/pull/2545
-          # https://github.com/pytorch/benchmark/pull/2546
-          # repository: pytorch/benchmark
-          repository: shink/benchmark
-          ref: test
+          repository: pytorch/benchmark
           path: benchmark
 
       - name: Install benchmark dependencies
@@ -99,12 +94,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ascend_npu_benchmark.json
-          path: ascend_npu_benchmark.json
+          path: benchmark/ascend_npu_benchmark.json
           if-no-files-found: error
           retention-days: 1
           overwrite: true
 
+      - name: Generate statistics report
+        id: report
+        run: |
+          output_path=$(realpath benchmark/ascend_npu_benchmark.json)
+          table=$(python .ci/benchmark.py)
+          echo "table=${table}" >> $GITHUB_OUTPUT
+
       - name: Write to workflow job summary
+        if: ${{ steps.report.outputs.table }}
         run: |
           echo "## Torchbenchmark statistics report" >> $GITHUB_STEP_SUMMARY
-          echo "TODO" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.report.outputs.table }}" >> $GITHUB_STEP_SUMMARY

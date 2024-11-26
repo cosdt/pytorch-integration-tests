@@ -67,7 +67,6 @@ jobs:
           # repository: Ascend/pytorch
           repository: shink/torchnpu
           ref: feat/autoload
-          submodules: recursive
           path: torch_npu
 
       - name: Download distribution artifact

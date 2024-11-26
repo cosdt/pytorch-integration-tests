@@ -7,6 +7,8 @@ across various devices by running comprehensive GitHub workflows.
 
 ## Accelerator Integration Test Results
 
+<!-- Start -->
+
 | [torch_npu][1]                   |
 |----------------------------------|
 | [![Ascend NPU Test Suite][2]][3] | 
@@ -16,6 +18,8 @@ across various devices by running comprehensive GitHub workflows.
 [2]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/ascend_npu_test.yml/badge.svg
 
 [3]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/ascend_npu_test.yml
+
+<!-- End -->
 
 ## Overview
 

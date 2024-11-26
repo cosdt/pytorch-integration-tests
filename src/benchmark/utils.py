@@ -72,12 +72,6 @@ def read_metrics(path: str, *, metric=None) -> List[TorchBenchModelMetric]:
     return metrics
 
 
-def filter_result(metrics: List[TorchBenchModelMetric], *, model, device):
-    for metric in metrics:
-        if metric.key.name == model and metric.key.device == device:
-            return metric
-
-
 def generate_table(data):
     template = Template("""
     <table border="1">
@@ -96,6 +90,12 @@ def generate_table(data):
 def to_html_table(metrics: List[TorchBenchModelMetric]):
     models = list({metric.key.name for metric in metrics})
     devices = list({metric.key.device for metric in metrics})
+
+    def filter_result(metrics: List[TorchBenchModelMetric], *, model, device):
+        for metric in metrics:
+            if metric.key.name == model and metric.key.device == device:
+                return metric
+
     rows = []
     for model in models:
         row = [model]
