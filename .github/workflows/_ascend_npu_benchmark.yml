@@ -72,6 +72,12 @@ jobs:
         run: |
           pip install ${{ inputs.artifact_name }}
 
+      - name: Install torch_npu dependencies
+        working-directory: ascend_npu
+        run: |
+          curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
+          pip install -r requirements.txt
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -82,10 +88,9 @@ jobs:
           path: benchmark
 
       - name: Install benchmark dependencies
-        working-directory: benchmark
         run: |
-          pip install -r requirements.txt
-          python install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
+          pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt
+          python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2 --constraint ascend_npu/requirements.txt
 
       - name: Run benchmarks
         working-directory: benchmark
