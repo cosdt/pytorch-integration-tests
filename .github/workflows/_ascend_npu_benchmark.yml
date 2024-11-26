@@ -61,16 +61,17 @@ jobs:
           apt update
           apt install --no-install-recommends -y git gcc g++ make cmake ninja-build curl
 
-      - name: Download ${{ inputs.artifact_name }}
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.artifact_name }}
-          path: ascend_npu
+#      - name: Download ${{ inputs.artifact_name }}
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: ${{ inputs.artifact_name }}
+#          path: ascend_npu
 
       - name: Install torch_npu
         working-directory: ascend_npu
         run: |
-          pip install ${{ inputs.artifact_name }}
+#          pip install ${{ inputs.artifact_name }}
+          pip install torch-npu --index-url https://pypi.org/simple/
 
       - name: Install torch_npu dependencies
         working-directory: ascend_npu
