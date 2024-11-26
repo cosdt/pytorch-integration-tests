@@ -70,10 +70,16 @@ jobs:
           repository: pytorch/benchmark
           path: benchmark
 
-      # TODO
+      - name: Download ${{ inputs.artifact_name }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ascend_npu
+
       - name: Install torch_npu
+        working-directory: ascend_npu
         run: |
-          pip install torch-npu --index-url https://pypi.org/simple
+          pip install ${{ inputs.artifact_name }}
 
       - name: Install torch_npu dependencies
         working-directory: ascend_npu
@@ -83,10 +89,16 @@ jobs:
 
       - name: Install benchmark dependencies
         run: |
-          ls -al ascend_npu
-          echo "\n"
           pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt
           python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
+
+      - name: Show environment info
+        run: |
+          npu_is_available=$(python -c "import torch; print(torch.npu.is_available())")
+          npu_count=$(python -c "import torch; print(torch.npu.device_count())")
+          echo "NPU is available: ${npu_is_available}"
+          echo "NPU count: ${npu_count}"
+          pip list | grep torch
 
       - name: Run benchmarks
         working-directory: benchmark
