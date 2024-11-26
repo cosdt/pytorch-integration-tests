@@ -82,3 +82,4 @@ jobs:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
       device: ${{ needs.prepare.outputs.device }}
+      artifact_name: 'tmp'
