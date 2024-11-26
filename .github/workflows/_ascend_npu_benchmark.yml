@@ -62,15 +62,16 @@ jobs:
           apt install --no-install-recommends -y git gcc g++ make cmake ninja-build curl
 
       - name: Install torch_npu
-        working-directory: ascend_npu
         run: |
           pip install torch-npu --index-url https://pypi.org/simple/
 
       - name: Install torch_npu dependencies
-        working-directory: ascend_npu
         run: |
-          curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
-          pip install -r requirements.txt
+          mkdir ascend_npu
+          curl -fsSL -o ascend_npu/requirements.txt https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
+          pip install -r ascend_npu/requirements.txt
+          echo $(pwd)
+          echo $(ls -la)
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -83,8 +84,8 @@ jobs:
 
       - name: Install benchmark dependencies
         run: |
-          pip install -r benchmark/requirements.txt --constraint ./ascend_npu/requirements.txt
-          python ./benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
+          pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt
+          python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
 
       - name: Run benchmarks
         working-directory: benchmark
