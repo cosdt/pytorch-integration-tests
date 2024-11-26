@@ -79,10 +79,8 @@ jobs:
         working-directory: ascend_npu
         run: |
           pip install ${{ inputs.artifact_name }}
-          torch_npu_version=$(python -c "import torch_npu; print(torch_npu.__version__)")
           npu_is_available=$(python -c "import torch; print(torch.npu.is_available())")
           npu_count=$(python -c "import torch; print(torch.npu.device_count())")
-          echo "Installed torch_npu: ${torch_npu_version}"
           echo "NPU is available: ${npu_is_available}"
           echo "NPU count: ${npu_count}"
 
@@ -127,3 +125,8 @@ jobs:
         run: |
           echo "## Torchbenchmark statistics report" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.report.outputs.table }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Modify README.md
+        run: |
+          echo "${{ github.event_name }}"
+          echo "${{ github.event_name == 'push' }}"
