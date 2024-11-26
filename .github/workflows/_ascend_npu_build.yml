@@ -29,6 +29,14 @@ jobs:
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
+      options: >-
+        --network host
+      env:
+        HTTP_PROXY: http://127.0.0.1:10809
+        HTTPS_PROXY: http://127.0.0.1:10809
+        ALL_PROXY: socks5://127.0.0.1:10808
+        SOCKS_PROXY: socks5://127.0.0.1:10808
+        NO_PROXY: "localhost,127.0.0.1"
     outputs:
       dist_name: ${{ steps.list-dist.outputs.dist_name }}
     steps:

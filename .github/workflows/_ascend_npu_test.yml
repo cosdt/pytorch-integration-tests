@@ -45,6 +45,12 @@ jobs:
         --device /dev/davinci_manager
         --device /dev/devmm_svm
         --device /dev/hisi_hdc
+      env:
+        HTTP_PROXY: http://127.0.0.1:10809
+        HTTPS_PROXY: http://127.0.0.1:10809
+        ALL_PROXY: socks5://127.0.0.1:10808
+        SOCKS_PROXY: socks5://127.0.0.1:10808
+        NO_PROXY: "localhost,127.0.0.1"
     steps:
       - name: Show NPU info
         run: |
