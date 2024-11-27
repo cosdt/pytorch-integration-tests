@@ -29,7 +29,7 @@ defaults:
 
 jobs:
   test:
-    name: test torch_npu in ${{ inputs.image }} with ${{ inputs.device }}
+    name: test torch_npu
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}

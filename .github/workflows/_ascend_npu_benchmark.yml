@@ -29,7 +29,7 @@ defaults:
 
 jobs:
   test:
-    name: test torch_npu in ${{ inputs.image }} with ${{ inputs.device }}
+    name: run benchmarks for torch_npu
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
@@ -92,6 +92,10 @@ jobs:
           pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt "numpy==1.*"
           python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
 
+      - name: Install project dependencies
+        run: |
+          pip install -r requirements.txt
+
       - name: Show environment info
         run: |
           npu_is_available=$(python -c "import torch; print(torch.npu.is_available())")
@@ -128,8 +132,8 @@ jobs:
           output_path=$(realpath benchmark/ascend_npu_benchmark.json)
           python .ci/benchmark.py ${output_path}
 
-      - name: Modify README.md
-        if: ${{ always() }}
+      - name: Update README.md
+        if: ${{ github.event_name == 'push' }}
         run: |
           echo "${{ github.event_name }}"
           echo "${{ github.event_name == 'push' }}"

@@ -2,7 +2,6 @@ import ast
 import dataclasses
 import json
 import pathlib
-from jinja2 import Template
 from typing import Dict, List, Optional
 
 
@@ -75,21 +74,6 @@ def read_metrics(path: str, *, metric=None) -> List[TorchBenchModelMetric]:
     return metrics
 
 
-def generate_table(data):
-    template = Template("""
-<table border="1">
-    {% for row in data %}
-    <tr>
-        {% for cell in row %}
-        <td>{{ cell }}</td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-</table>
-    """)
-    return template.render(data=data)
-
-
 def to_html_table(metrics: List[TorchBenchModelMetric]):
     models = list({metric.key.name for metric in metrics})
     devices = list({metric.key.device for metric in metrics})
@@ -112,7 +96,8 @@ def to_html_table(metrics: List[TorchBenchModelMetric]):
             row.append(cell)
         rows.append(row)
 
-    header = [""] + devices
-    data = [header, *rows]
-    html_table = generate_table(data)
-    return html_table
+    from tabulate import tabulate
+
+    headers = [""] + devices
+    markdown_table = tabulate(rows, headers=headers, tablefmt="github")
+    return markdown_table
