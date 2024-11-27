@@ -14,7 +14,7 @@ class TestBenchmark(unittest.TestCase):
 
     def test_to_html_table(self):
         metrics = utils.read_metrics(path, metric="accuracy")
-        html_table = utils.to_html_table(metrics)
+        html_table = utils.to_markdown_table(metrics)
         self.assertIsNotNone(html_table)
 
 

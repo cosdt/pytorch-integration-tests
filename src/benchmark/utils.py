@@ -74,7 +74,7 @@ def read_metrics(path: str, *, metric=None) -> List[TorchBenchModelMetric]:
     return metrics
 
 
-def to_html_table(metrics: List[TorchBenchModelMetric]):
+def generate_table_rows(metrics: List[TorchBenchModelMetric]):
     models = list({metric.key.name for metric in metrics})
     devices = list({metric.key.device for metric in metrics})
 
@@ -96,8 +96,13 @@ def to_html_table(metrics: List[TorchBenchModelMetric]):
             row.append(cell)
         rows.append(row)
 
+    headers = [""] + devices
+    return headers, rows
+
+
+def to_markdown_table(metrics: List[TorchBenchModelMetric]):
     from tabulate import tabulate
 
-    headers = [""] + devices
+    headers, rows = generate_table_rows(metrics)
     markdown_table = tabulate(rows, headers=headers, tablefmt="github")
     return markdown_table
