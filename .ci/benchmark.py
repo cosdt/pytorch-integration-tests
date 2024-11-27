@@ -11,5 +11,5 @@ if __name__ == "__main__":
     # Write to workflow job summary
     summary_path = os.environ["GITHUB_STEP_SUMMARY"]
     with open(summary_path, "a") as f:
-        f.write("## My Job Summary\n")
+        f.write("## Torchbenchmark statistics report\n")
         f.write(html_table)

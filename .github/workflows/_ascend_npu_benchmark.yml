@@ -89,7 +89,7 @@ jobs:
 
       - name: Install benchmark dependencies
         run: |
-          pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt
+          pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt "numpy==1.*"
           python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
 
       - name: Show environment info

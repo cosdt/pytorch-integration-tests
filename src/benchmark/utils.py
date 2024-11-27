@@ -77,15 +77,15 @@ def read_metrics(path: str, *, metric=None) -> List[TorchBenchModelMetric]:
 
 def generate_table(data):
     template = Template("""
-    <table border="1">
-        {% for row in data %}
-        <tr>
-            {% for cell in row %}
-            <td>{{ cell }}</td>
-            {% endfor %}
-        </tr>
+<table border="1">
+    {% for row in data %}
+    <tr>
+        {% for cell in row %}
+        <td>{{ cell }}</td>
         {% endfor %}
-    </table>
+    </tr>
+    {% endfor %}
+</table>
     """)
     return template.render(data=data)
 
