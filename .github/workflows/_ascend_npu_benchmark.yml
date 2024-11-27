@@ -120,6 +120,10 @@ jobs:
       - name: Generate statistics report
         id: report
         run: |
+          set -x
+          realpath benchmark/ascend_npu_benchmark.json
+          ls benchmark
+          cat benchmark/ascend_npu_benchmark.json
           output_path=$(realpath benchmark/ascend_npu_benchmark.json)
           table=$(python .ci/benchmark.py ${output_path})
           echo "table=${table}" >> $GITHUB_OUTPUT
