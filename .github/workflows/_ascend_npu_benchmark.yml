@@ -117,22 +117,16 @@ jobs:
           retention-days: 1
           overwrite: true
 
-      - name: Generate statistics report
+      - name: Write to workflow job summary
         id: report
         run: |
           set -x
           realpath benchmark/ascend_npu_benchmark.json
           ls benchmark
           cat benchmark/ascend_npu_benchmark.json
-          output_path=$(realpath benchmark/ascend_npu_benchmark.json)
-          table=$(python .ci/benchmark.py ${output_path})
-          echo "table=${table}" >> $GITHUB_OUTPUT
 
-      - name: Write to workflow job summary
-        if: ${{ steps.report.outputs.table }}
-        run: |
-          echo "## Torchbenchmark statistics report" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.report.outputs.table }}" >> $GITHUB_STEP_SUMMARY
+          output_path=$(realpath benchmark/ascend_npu_benchmark.json)
+          python .ci/benchmark.py ${output_path}
 
       - name: Modify README.md
         if: ${{ always() }}

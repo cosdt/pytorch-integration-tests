@@ -37,6 +37,9 @@ def save_file(path: str, data) -> None:
 
 
 def parse_to_dict(config_str: str):
+    """
+    Parse a string (like 'key1=value1, key2=value2, ...') into a dict
+    """
     items = config_str.split(", ")
     config = {}
 
