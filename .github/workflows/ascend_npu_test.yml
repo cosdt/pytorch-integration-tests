@@ -98,6 +98,7 @@ jobs:
     name: Run benchmarks
     needs:
       - prepare
+      - build
       - test
     uses: ./.github/workflows/_ascend_npu_benchmark.yml
     with:
