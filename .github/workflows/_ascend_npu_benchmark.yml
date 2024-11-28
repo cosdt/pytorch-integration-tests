@@ -90,7 +90,7 @@ jobs:
       - name: Install benchmark dependencies
         run: |
           pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt "numpy==1.*"
-          python benchmark/install.py --userbenchmark test_bench --models BERT_pytorch hf_GPT2
+          python benchmark/install.py --userbenchmark test_bench
 
       - name: Install project dependencies
         run: |
@@ -108,7 +108,6 @@ jobs:
         working-directory: benchmark
         run: |
           python run_benchmark.py test_bench --accuracy --device npu --test eval \
-              --models BERT_pytorch,hf_GPT2 \
               --output ascend_npu_benchmark.json
 
       - name: Upload the output file
@@ -132,6 +131,7 @@ jobs:
           output_path=$(realpath benchmark/ascend_npu_benchmark.json)
           python .ci/benchmark.py ${output_path}
 
+      # TODO(shink)
       - name: Update README.md
         if: ${{ github.event_name == 'push' }}
         run: |
