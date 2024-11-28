@@ -90,7 +90,7 @@ jobs:
       - name: Install benchmark dependencies
         run: |
           pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt "numpy==1.*"
-          python benchmark/install.py --userbenchmark test_bench
+          python benchmark/install.py --userbenchmark test_bench --continue_on_fail
 
       - name: Install project dependencies
         run: |
