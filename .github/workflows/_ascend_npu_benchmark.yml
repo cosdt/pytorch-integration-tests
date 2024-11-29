@@ -39,7 +39,6 @@ jobs:
         - /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/
         - /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info
         - /etc/ascend_install.info:/etc/ascend_install.info
-        - /data/disk3/jyh/:/jyh
       options: >-
         --network host
         --device ${{ inputs.device }}
@@ -77,9 +76,10 @@ jobs:
           path: benchmark
 
       - name: Download ${{ inputs.artifact_name }}
-        working-directory: ascend_npu
-        run: |
-          cp /jyh/*.whl .
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ascend_npu
 
       - name: Install torch_npu
         working-directory: ascend_npu
