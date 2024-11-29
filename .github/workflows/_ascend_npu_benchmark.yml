@@ -63,7 +63,9 @@ jobs:
       - name: Install system dependencies
         run: |
           apt update
-          apt install --no-install-recommends -y git gcc g++ make cmake ninja-build curl libgl1 libglib2.0-0
+          apt install --no-install-recommends -y \
+              git gcc g++ make cmake ninja-build curl \
+              libgl1 libglib2.0-0 libsndfile1
 
       - name: Checkout
         uses: actions/checkout@v4
