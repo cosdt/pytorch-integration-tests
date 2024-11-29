@@ -72,7 +72,8 @@ jobs:
       - name: Checkout benchmark
         uses: actions/checkout@v4
         with:
-          repository: pytorch/benchmark
+          repository: shink/benchmark
+          ref: feat/test_bench/continue_on_error
           path: benchmark
 
       - name: Download ${{ inputs.artifact_name }}
