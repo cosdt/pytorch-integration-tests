@@ -48,7 +48,7 @@ on:
           - /dev/davinci6
           - /dev/davinci7
           - /dev/davinci8
-        default: '/dev/davinci4'
+        default: '/dev/davinci5'
         description: 'The device selected to run on'
 
 # Only cancel the previous runs when triggered by a pull request
@@ -70,7 +70,7 @@ jobs:
         run: |
           set -e
           echo "runner=${{ github.event.inputs.runner || 'self-hosted' }}" >> $GITHUB_OUTPUT
-          echo "device=${{ github.event.inputs.device || '/dev/davinci4' }}" >> $GITHUB_OUTPUT
+          echo "device=${{ github.event.inputs.device || '/dev/davinci5' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:latest' }}" >> $GITHUB_OUTPUT
 
 #  build:
