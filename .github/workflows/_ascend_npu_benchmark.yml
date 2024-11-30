@@ -70,6 +70,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # TODO(shink): Update once PR merged
+      # https://github.com/pytorch/benchmark/pull/2550
       - name: Checkout benchmark
         uses: actions/checkout@v4
         with:

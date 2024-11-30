@@ -12,10 +12,10 @@ class TestBenchmark(unittest.TestCase):
             self.assertEqual(metric.key.device, "npu")
             self.assertEqual(metric.value, "pass")
 
-    def test_to_html_table(self):
+    def test_to_markdown_table(self):
         metrics = utils.read_metrics(path, metric="accuracy")
-        html_table = utils.to_markdown_table(metrics)
-        self.assertIsNotNone(html_table)
+        markdown_table = utils.to_markdown_table(metrics)
+        self.assertIsNotNone(markdown_table)
 
 
 if __name__ == "__main__":
