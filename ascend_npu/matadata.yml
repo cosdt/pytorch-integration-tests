@@ -1,0 +1,10 @@
+device: "npu"
+backend_extension: "torch_npu"
+link: https://github.com/Ascend/pytorch
+torchbenchmark:
+  test:
+    - train
+    - eval
+  models:
+  skip:
+    - llava

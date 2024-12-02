@@ -7,7 +7,11 @@ across various devices by running comprehensive GitHub workflows.
 
 ## Accelerator Integration Test Results
 
-<!-- Start -->
+<details>
+
+<summary>Torchbenchmark statistics report</summary>
+
+<!-- Torchbenchmark start -->
 
 |                                 | [torch_npu][1] |
 |---------------------------------|----------------|
@@ -121,7 +125,9 @@ across various devices by running comprehensive GitHub workflows.
 
 [3]: https://github.com/cosdt/pytorch-integration-tests/actions/workflows/ascend_npu_test.yml
 
-<!-- End -->
+<!-- Torchbenchmark end -->
+
+</details>
 
 ## Overview
 
