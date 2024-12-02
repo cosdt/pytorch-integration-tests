@@ -130,25 +130,26 @@ jobs:
           overwrite: true
 
       - name: Write to workflow job summary
-        id: report
         run: |
-          python .ci/benchmark.py --write-gh-job-summary \
-                  --path benchmark/ascend_npu_benchmark.json
-
-      - name: Update README.md
-        if: ${{ github.event_name == 'push' && github.event_name == 'schedule' }}
-        run: |
-          python .ci/benchmark.py --update-readme \
-                  --path benchmark/ascend_npu_benchmark.json
+          python .ci/benchmark.py --write-gh-job-summary --path benchmark/ascend_npu_benchmark.json
 
       - name: Update README.md
         if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+        id: update-readme
+        run: |
+          python .ci/benchmark.py --update-readme --path benchmark/ascend_npu_benchmark.json
+          if git diff --quiet README.md; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create a pull request for changes to README.md
+        if: ${{ steps.update-readme.outputs.changed == 'true' }}
         uses: peter-evans/create-pull-request@v7
         with:
           add-paths: README.md
           branch: ascend-npu/benchmark
           title: "[Ascend NPU] Update torchbenchmark report in README.md"
           commit-message: "Update README.md"
-          reviewers: |
-            shink
-            FFFrog
+          reviewers: shink
