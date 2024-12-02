@@ -77,7 +77,7 @@ jobs:
     name: Build torch_npu
     needs:
       - prepare
-    uses: ./.github/workflows/ascend_npu/_ascend_npu_build.yml
+    uses: ./.github/workflows/_ascend_npu_build.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
@@ -87,7 +87,7 @@ jobs:
     needs:
       - prepare
       - build
-    uses: ./.github/workflows/ascend_npu/_ascend_npu_test.yml
+    uses: ./.github/workflows/_ascend_npu_test.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
@@ -100,7 +100,7 @@ jobs:
       - prepare
       - build
       - test
-    uses: ./.github/workflows/ascend_npu/_ascend_npu_benchmark.yml
+    uses: ./.github/workflows/_ascend_npu_benchmark.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
