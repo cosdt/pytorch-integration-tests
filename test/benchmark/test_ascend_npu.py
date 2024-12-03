@@ -14,7 +14,6 @@ class TestBenchmark(unittest.TestCase):
     def test_to_markdown_table(self):
         metrics = utils.read_metrics(path, metric="accuracy")
         markdown_table = utils.to_markdown_table(metrics)
-        print(markdown_table)
         self.assertIsNotNone(markdown_table)
 
 
