@@ -118,7 +118,7 @@ jobs:
       - name: Run benchmarks
         working-directory: benchmark
         run: |
-          python run_benchmark.py test_bench --accuracy --device npu --test eval --skip llava \
+          python run_benchmark.py test_bench --accuracy --device npu --test eval \
               --output ascend_npu_benchmark.json
 
       - name: Upload the output file
