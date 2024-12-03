@@ -7,7 +7,7 @@ on:
     paths:
       - '.github/workflows/ascend_npu_test.yml'
       - '.github/workflows/_ascend_npu_build.yml'
-      - '.github/workflows/_ascend_npu_test.yml'
+      - '.github/workflows/_ascend_npu_ut.yml'
       - '.github/workflows/_ascend_npu_benchmark.yml'
       - '.github/actions/**'
       - '.ci/**'
@@ -20,7 +20,7 @@ on:
     paths:
       - '.github/workflows/ascend_npu_test.yml'
       - '.github/workflows/_ascend_npu_build.yml'
-      - '.github/workflows/_ascend_npu_test.yml'
+      - '.github/workflows/_ascend_npu_ut.yml'
       - '.github/workflows/_ascend_npu_benchmark.yml'
       - '.github/actions/**'
       - '.ci/**'
@@ -103,7 +103,7 @@ jobs:
     needs:
       - prepare
       - build
-    uses: ./.github/workflows/_ascend_npu_test.yml
+    uses: ./.github/workflows/_ascend_npu_ut.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}

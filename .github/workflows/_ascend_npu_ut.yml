@@ -1,4 +1,4 @@
-name: '_ascend_npu_test'
+name: '_ascend_npu_ut'
 
 on:
   workflow_call:
