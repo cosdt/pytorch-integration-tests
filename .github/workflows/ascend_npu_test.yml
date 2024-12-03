@@ -4,18 +4,34 @@ on:
   push:
     branches:
       - 'main'
-
+    paths:
+      - '.github/workflows/ascend_npu_test.yml'
+      - '.github/workflows/_ascend_npu_build.yml'
+      - '.github/workflows/_ascend_npu_test.yml'
+      - '.github/workflows/_ascend_npu_benchmark.yml'
+      - '.github/actions/**'
+      - '.ci/**'
+      - 'ascend_npu/**'
+      - 'src/**'
+      - '!**/*.md'
   pull_request:
     branches:
       - 'main'
-
+    paths:
+      - '.github/workflows/ascend_npu_test.yml'
+      - '.github/workflows/_ascend_npu_build.yml'
+      - '.github/workflows/_ascend_npu_test.yml'
+      - '.github/workflows/_ascend_npu_benchmark.yml'
+      - '.github/actions/**'
+      - '.ci/**'
+      - 'ascend_npu/**'
+      - 'src/**'
+      - '!**/*.md'
   release:
     types:
       - 'published'
-
   schedule:
     - cron: '0 12 * * *'
-
   workflow_dispatch:
     inputs:
       runner:
