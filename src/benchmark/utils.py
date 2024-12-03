@@ -25,13 +25,13 @@ class TorchBenchModelMetric:
 
 
 def read_json(path: str) -> dict:
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         data = json.load(f)
         return data
 
 
 def save_file(path: str, data) -> None:
-    with open(path, 'w') as file:
+    with open(path, "w") as file:
         file.write(data)
 
 
@@ -54,7 +54,7 @@ def parse_to_dict(config_str: str):
 
 def read_metrics(path: str, *, metric=None) -> List[TorchBenchModelMetric]:
     output = read_json(path)
-    metrics_data = output.get('metrics', {})
+    metrics_data = output.get("metrics", {})
 
     metrics = []
     for metric_key, metric_value in metrics_data.items():
@@ -75,10 +75,11 @@ def read_metrics(path: str, *, metric=None) -> List[TorchBenchModelMetric]:
 
 
 def generate_table_rows(metrics: List[TorchBenchModelMetric]):
-    models = list({metric.key.name for metric in metrics})
     devices = list({metric.key.device for metric in metrics})
+    models = list({metric.key.name for metric in metrics})
+    models = sorted(models, key=lambda x: x.lower())
 
-    def filter_result(metrics: List[TorchBenchModelMetric], *, model, device):
+    def filter_metric(metrics: List[TorchBenchModelMetric], *, model, device):
         for metric in metrics:
             if metric.key.name == model and metric.key.device == device:
                 return metric
@@ -87,10 +88,14 @@ def generate_table_rows(metrics: List[TorchBenchModelMetric]):
     for model in models:
         row = [model]
         for device in devices:
-            metric = filter_result(metrics, model=model, device=device)
+            metric = filter_metric(metrics, model=model, device=device)
             if metric is not None:
-                is_pass = metric.value == "pass"
-                cell = "✅" if is_pass else "❌"
+                if metric.value == "pass":
+                    cell = "✅"
+                elif metric.value == "skip":
+                    cell = "⚠️"
+                else:
+                    cell = "❌"
             else:
                 cell = ""
             row.append(cell)

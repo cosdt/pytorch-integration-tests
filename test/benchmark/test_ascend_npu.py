@@ -7,14 +7,14 @@ path = "ascend_npu_benchmark.json"
 class TestBenchmark(unittest.TestCase):
     def test_read_metrics(self):
         metrics = utils.read_metrics(path, metric="accuracy")
-        self.assertTrue(len(metrics) == 2)
+        self.assertTrue(len(metrics) == 103)
         for metric in metrics:
             self.assertEqual(metric.key.device, "npu")
-            self.assertEqual(metric.value, "pass")
 
     def test_to_markdown_table(self):
         metrics = utils.read_metrics(path, metric="accuracy")
         markdown_table = utils.to_markdown_table(metrics)
+        print(markdown_table)
         self.assertIsNotNone(markdown_table)
 
 
