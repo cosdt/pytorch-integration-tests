@@ -122,3 +122,5 @@ jobs:
       image: ${{ needs.prepare.outputs.image }}
       device: ${{ needs.prepare.outputs.device }}
       artifact_name: ${{ needs.build.outputs.artifact_name }}
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}

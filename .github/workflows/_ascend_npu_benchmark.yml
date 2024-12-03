@@ -19,6 +19,10 @@ on:
         required: true
         type: string
         description: 'The torch_npu distribution artifact name'
+    secrets:
+      pr-token:
+        description: 'A token used to create a pull request'
+        required: true
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
 # declared as "shell: bash -el {0}" on steps that need to be properly activated.
@@ -150,6 +154,7 @@ jobs:
         if: ${{ steps.update-readme.outputs.changed == 'true' }}
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.pr-token }}
           add-paths: README.md
           branch: ascend-npu/benchmark
           title: "[Ascend NPU] Update torchbenchmark report in README.md"
