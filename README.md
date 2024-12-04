@@ -13,28 +13,111 @@ across various devices by running comprehensive GitHub workflows.
 
 <!-- Torchbenchmark start -->
 
-|                        | Ascend NPU | Intel Gaudi |
-|------------------------|------------|-------------|
-| alexnet                | ✅          | ✅           | 
-| BERT_pytorch           | ✅          | ✅           | 
-| dcgan                  | ✅          | ✅           | 
-| hf_clip                | ✅          | ✅           | 
-| hf_GPT2                | ✅          | ✅           | 
-| hf_GPT2_large          | ✅          | ✅           | 
-| hf_Reformer            | ⚠️         | ✅           | 
-| hf_Whisper             | ✅          | ✅           | 
-| llama                  | ✅          | ✅           | 
-| llama_v2_7b_16h        | ❌          | ❌           | 
-| llava                  | ⚠️         | ✅           | 
-| moondream              | ❌          | ❌           | 
-| nanogpt                | ✅          | ✅           | 
-| nvidia_deeprecommender | ❌          | ❌           | 
-| opacus_cifar10         | ✅          | ✅           | 
-| resnet152              | ✅          | ✅           | 
-| resnet18               | ✅          | ✅           | 
-| resnet50               | ✅          | ✅           | 
-| vgg16                  | ✅          | ✅           | 
-| yolov3                 | ✅          | ✅           | 
+|                                 | [torch_npu][1] |
+|---------------------------------|----------------|
+| simple_gpt                      | ❌              |
+| detectron2_fasterrcnn_r_50_dc5  | ❌              |
+| LearningToPaint                 | ✅              |
+| hf_GPT2_large                   | ✅              |
+| dcgan                           | ✅              |
+| nanogpt                         | ✅              |
+| fastNLP_Bert                    | ✅              |
+| moondream                       | ❌              |
+| mobilenet_v2_quantized_qat      | ❌              |
+| functorch_dp_cifar10            | ✅              |
+| simple_gpt_tp_manual            | ❌              |
+| speech_transformer              | ✅              |
+| yolov3                          | ✅              |
+| resnet50_quantized_qat          | ❌              |
+| sam_fast                        | ❌              |
+| alexnet                         | ✅              |
+| timm_efficientnet               | ✅              |
+| pyhpc_isoneutral_mixing         | ✅              |
+| basic_gnn_edgecnn               | ✅              |
+| nvidia_deeprecommender          | ❌              |
+| opacus_cifar10                  | ✅              |
+| dlrm                            | ✅              |
+| hf_Bert                         | ✅              |
+| hf_T5_generate                  | ✅              |
+| resnet50                        | ✅              |
+| hf_BigBird                      | ✅              |
+| resnext50_32x4d                 | ✅              |
+| pyhpc_turbulent_kinetic_energy  | ✅              |
+| llama                           | ✅              |
+| detectron2_maskrcnn_r_50_c4     | ❌              |
+| Super_SloMo                     | ✅              |
+| moco                            | ❌              |
+| stable_diffusion_unet           | ❌              |
+| microbench_unbacked_tolist_sum  | ✅              |
+| detectron2_maskrcnn_r_101_c4    | ❌              |
+| hf_distil_whisper               | ✅              |
+| mnasnet1_0                      | ✅              |
+| detectron2_fasterrcnn_r_50_fpn  | ❌              |
+| timm_resnest                    | ✅              |
+| hf_GPT2                         | ✅              |
+| squeezenet1_1                   | ✅              |
+| basic_gnn_gin                   | ✅              |
+| hf_clip                         | ✅              |
+| mobilenet_v2                    | ✅              |
+| drq                             | ✅              |
+| hf_Roberta_base                 | ✅              |
+| detectron2_maskrcnn_r_50_fpn    | ❌              |
+| timm_nfnet                      | ✅              |
+| timm_vovnet                     | ✅              |
+| doctr_det_predictor             | ✅              |
+| sam                             | ✅              |
+| hf_T5_large                     | ✅              |
+| mobilenet_v3_large              | ✅              |
+| detectron2_fcos_r_50_fpn        | ❌              |
+| soft_actor_critic               | ✅              |
+| llava                           | ❌              |
+| timm_regnet                     | ✅              |
+| functorch_maml_omniglot         | ✅              |
+| detectron2_fasterrcnn_r_101_c4  | ❌              |
+| hf_DistilBert                   | ✅              |
+| tts_angular                     | ✅              |
+| detectron2_maskrcnn             | ❌              |
+| basic_gnn_sage                  | ✅              |
+| tacotron2                       | ❌              |
+| detectron2_maskrcnn_r_101_fpn   | ❌              |
+| lennard_jones                   | ✅              |
+| pytorch_unet                    | ✅              |
+| vgg16                           | ✅              |
+| BERT_pytorch                    | ✅              |
+| timm_efficientdet               | ❌              |
+| pyhpc_equation_of_state         | ✅              |
+| maml                            | ✅              |
+| detectron2_fasterrcnn_r_50_c4   | ❌              |
+| resnet152                       | ✅              |
+| phlippe_densenet                | ✅              |
+| maml_omniglot                   | ✅              |
+| phlippe_resnet                  | ✅              |
+| pytorch_CycleGAN_and_pix2pix    | ✅              |
+| hf_Whisper                      | ✅              |
+| hf_T5                           | ✅              |
+| densenet121                     | ✅              |
+| cm3leon_generate                | ✅              |
+| detectron2_fasterrcnn_r_101_fpn | ❌              |
+| hf_Bert_large                   | ✅              |
+| stable_diffusion_text_encoder   | ❌              |
+| hf_Reformer                     | ❌              |
+| detectron2_fasterrcnn_r_101_dc5 | ❌              |
+| demucs                          | ✅              |
+| pytorch_stargan                 | ✅              |
+| hf_T5_base                      | ✅              |
+| torch_multimodal_clip           | ✅              |
+| vision_maskrcnn                 | ❌              |
+| timm_vision_transformer_large   | ✅              |
+| hf_Bart                         | ✅              |
+| shufflenet_v2_x1_0              | ✅              |
+| llama_v2_7b_16h                 | ❌              |
+| basic_gnn_gcn                   | ✅              |
+| resnet18                        | ✅              |
+| Background_Matting              | ✅              |
+| doctr_reco_predictor            | ✅              |
+| timm_vision_transformer         | ✅              |
+| hf_Albert                       | ✅              |
+| hf_Longformer                   | ✅              |
 
 [1]: https://github.com/ascend/pytorch
 
