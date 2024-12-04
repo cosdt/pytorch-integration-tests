@@ -18,10 +18,10 @@ jobs:
           echo "repo: ${{ github.event.client_payload.repo }}"
           echo "pull_request: ${{ github.event.client_payload.pull_request }}"
 
-      - name: Dispatch PyTorch event
+      - name: Redispatch PyTorch event
         uses: peter-evans/repository-dispatch@v3
         with:
-          repository: ${{ github.repository }}
           token: ${{ secrets.COSDT_BOT_TOKEN }}
+          repository: ${{ github.repository }}
           event-type: pytorch-event-redispatch
-          client-payload: ${{ github.event.client_payload }}
+          client-payload: ${{ toJson(github.event.client_payload) }}
