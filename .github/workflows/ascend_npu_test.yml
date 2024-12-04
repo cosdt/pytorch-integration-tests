@@ -32,6 +32,8 @@ on:
       - 'published'
   schedule:
     - cron: '0 12 * * *'
+  repository_dispatch:
+    types: [pytorch-event-redispatch]
   workflow_dispatch:
     inputs:
       runner:

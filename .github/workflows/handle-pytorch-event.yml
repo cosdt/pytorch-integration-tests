@@ -1,0 +1,27 @@
+name: Handle events from PyTorch
+
+on:
+  repository_dispatch:
+    types: [pytorch-event]
+
+jobs:
+  redispatch-pr-event:
+    name: Redispatch PyTorch event
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Print pull request info
+        run: |
+          echo "owner: ${{ github.event.client_payload.owner }}"
+          echo "repo: ${{ github.event.client_payload.repo }}"
+          echo "pull_request: ${{ github.event.client_payload.pull_request }}"
+
+      - name: Dispatch PyTorch event
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.COSDT_BOT_TOKEN }}
+          event-type: pytorch-event-redispatch
+          client-payload: ${{ github.event.client_payload }}
