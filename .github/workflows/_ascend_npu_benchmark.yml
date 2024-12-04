@@ -148,7 +148,6 @@ jobs:
           python .ci/benchmark.py --write-gh-job-summary --path benchmark/ascend_npu_benchmark.json
 
       - name: Update README.md
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         id: update-readme
         run: |
           python .ci/benchmark.py --update-readme --path benchmark/ascend_npu_benchmark.json
@@ -158,6 +157,7 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
+      # https://github.com/peter-evans/create-pull-request
       - name: Create a pull request for changes to README.md
         if: ${{ steps.update-readme.outputs.changed == 'true' }}
         uses: peter-evans/create-pull-request@v7
@@ -165,8 +165,13 @@ jobs:
           token: ${{ secrets.pr-token }}
           committer: 'cosdt-bot <cosdtbot@gmail.com>'
           author: 'cosdt-bot <cosdtbot@gmail.com>'
+          commit-message: 'Update torchbenchmark report in README.md'
           add-paths: README.md
           branch: ascend-npu/benchmark
           title: '[Ascend NPU] Update torchbenchmark report in README.md'
-          commit-message: 'Update README.md'
+          body: |
+            The torchbenchmark results running on Ascend NPU have changed, I'm updating the report in README.md.
+
+            <!-- cc: @Yikun @hipudding @FFFrog @Zhenbin-8 @zeshengzong @MengqingCao @shink --> 
+            cc: @shink
           reviewers: shink
