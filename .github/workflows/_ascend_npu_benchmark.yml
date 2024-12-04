@@ -70,8 +70,16 @@ jobs:
         run: |
           apt-get update
           apt-get install -y \
-              git gcc g++ make cmake ninja-build curl \
+              gcc g++ make cmake ninja-build curl \
               libgl1 libglib2.0-0 libsndfile1
+
+      # We must use the latest git, for more information see:
+      # https://github.com/actions/checkout/issues/335#issuecomment-763159788
+      - name: Install latest git
+        run: |
+          apt-get update && apt-get install -y software-properties-common
+          apt-get update && add-apt-repository -y ppa:git-core/ppa
+          apt-get update && apt-get install -y git
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -155,8 +163,10 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.pr-token }}
+          committer: 'cosdt-bot <cosdtbot@gmail.com>'
+          author: 'cosdt-bot <cosdtbot@gmail.com>'
           add-paths: README.md
           branch: ascend-npu/benchmark
-          title: "[Ascend NPU] Update torchbenchmark report in README.md"
-          commit-message: "Update README.md"
+          title: '[Ascend NPU] Update torchbenchmark report in README.md'
+          commit-message: 'Update README.md'
           reviewers: shink
