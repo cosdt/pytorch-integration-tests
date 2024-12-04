@@ -163,6 +163,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.pr-token }}
+          base: ${{ github.head_ref }}
           committer: 'cosdt-bot <cosdtbot@gmail.com>'
           author: 'cosdt-bot <cosdtbot@gmail.com>'
           commit-message: 'Update torchbenchmark report in README.md'
@@ -172,6 +173,5 @@ jobs:
           body: |
             The torchbenchmark results running on Ascend NPU have changed, I'm updating the report in README.md.
 
-            <!-- cc: @Yikun @hipudding @FFFrog @Zhenbin-8 @zeshengzong @MengqingCao @shink --> 
             cc: @shink
           reviewers: shink
