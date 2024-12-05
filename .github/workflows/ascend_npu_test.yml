@@ -33,7 +33,7 @@ on:
   schedule:
     - cron: '0 12 * * *'
   repository_dispatch:
-    types: [pytorch-event-redispatch]
+    types: [pytorch-pr-event-redispatch]
   workflow_dispatch:
     inputs:
       runner:

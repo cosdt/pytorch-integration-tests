@@ -2,7 +2,7 @@ name: Handle events from PyTorch
 
 on:
   repository_dispatch:
-    types: [pytorch-event]
+    types: [pytorch-pr-event]
 
 jobs:
   redispatch-pr-event:
@@ -12,10 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Print pull request info
+      - name: Print PR event payload
         run: |
           echo "owner: ${{ github.event.client_payload.owner }}"
           echo "repo: ${{ github.event.client_payload.repo }}"
+          echo "event_name: ${{ github.event.client_payload.event_name }}"
           echo "pull_request: ${{ toJson(github.event.client_payload.pull_request) }}"
 
       - name: Redispatch PyTorch event
@@ -23,5 +24,5 @@ jobs:
         with:
           token: ${{ secrets.COSDT_BOT_TOKEN }}
           repository: ${{ github.repository }}
-          event-type: pytorch-event-redispatch
+          event-type: pytorch-pr-event-redispatch
           client-payload: ${{ toJson(github.event.client_payload) }}
