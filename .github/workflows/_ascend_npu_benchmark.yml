@@ -70,27 +70,16 @@ jobs:
         run: |
           apt-get update
           apt-get install -y \
-              gcc g++ make cmake ninja-build curl \
+              git gcc g++ make cmake ninja-build curl \
               libgl1 libglib2.0-0 libsndfile1
-
-      # We must use the latest git, for more information see:
-      # https://github.com/actions/checkout/issues/335#issuecomment-763159788
-      - name: Install latest git
-        run: |
-          apt-get update && apt-get install -y software-properties-common
-          apt-get update && add-apt-repository -y ppa:git-core/ppa
-          apt-get update && apt-get install -y git
 
       - name: Checkout
         uses: actions/checkout@v4
 
-      # TODO(shink): Update once PR merged
-      # https://github.com/pytorch/benchmark/pull/2550
       - name: Checkout benchmark
         uses: actions/checkout@v4
         with:
-          repository: shink/benchmark
-          ref: feat/test_bench/continue_on_error
+          repository: pytorch/benchmark
           path: benchmark
 
       - name: Download ${{ inputs.artifact_name }}
@@ -148,14 +137,10 @@ jobs:
           python .ci/benchmark.py --write-gh-job-summary --path benchmark/ascend_npu_benchmark.json
 
       - name: Update README.md
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         id: update-readme
         run: |
           python .ci/benchmark.py --update-readme --path benchmark/ascend_npu_benchmark.json
-          if git diff --quiet README.md; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
 
       # https://github.com/peter-evans/create-pull-request
       - name: Create a pull request for changes to README.md
@@ -173,5 +158,5 @@ jobs:
           body: |
             The torchbenchmark results running on Ascend NPU have changed, I'm updating the report in README.md.
 
-            cc: @shink
+            cc: @Yikun @hipudding @FFFrog @Zhenbin-8 @zeshengzong @wjunLu @MengqingCao @shink
           reviewers: shink
