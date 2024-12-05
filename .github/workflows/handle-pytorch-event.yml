@@ -16,7 +16,7 @@ jobs:
         run: |
           echo "owner: ${{ github.event.client_payload.owner }}"
           echo "repo: ${{ github.event.client_payload.repo }}"
-          echo "pull_request: ${{ github.event.client_payload.pull_request }}"
+          echo "pull_request: ${{ toJson(github.event.client_payload.pull_request) }}"
 
       - name: Redispatch PyTorch event
         uses: peter-evans/repository-dispatch@v3
