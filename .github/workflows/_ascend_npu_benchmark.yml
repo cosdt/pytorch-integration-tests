@@ -104,6 +104,7 @@ jobs:
           curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
           pip install -r requirements.txt
 
+      # TODO: We must use numpy 1.x
       - name: Install benchmark dependencies
         run: |
           pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt "numpy==1.*"
@@ -135,7 +136,6 @@ jobs:
           path: benchmark/ascend_npu_benchmark.json
           if-no-files-found: error
           retention-days: 1
-          overwrite: true
 
       - name: Write to workflow job summary
         run: |
@@ -147,12 +147,14 @@ jobs:
         run: |
           python .ci/benchmark.py --update-readme --path benchmark/ascend_npu_benchmark.json
           if git diff --quiet README.md; then
+            echo "README.md not changed"
             echo "changed=false" >> $GITHUB_OUTPUT
           else
+            echo "README.md changed"
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      # https://github.com/peter-evans/create-pull-request
+      # See: https://github.com/peter-evans/create-pull-request
       - name: Create a pull request for changes to README.md
         if: ${{ steps.update-readme.outputs.changed == 'true' }}
         uses: peter-evans/create-pull-request@v7

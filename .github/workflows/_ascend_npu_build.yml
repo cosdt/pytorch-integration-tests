@@ -69,15 +69,6 @@ jobs:
           submodules: recursive
           path: torch_npu
 
-      - name: Tmp
-        run: |
-          set -x
-          pwd
-          ls -al .
-          echo $GITHUB_WORKSPACE
-          git status
-          git diff --quiet README.md
-
       - name: Install pip dependencies
         working-directory: torch_npu
         run: |
