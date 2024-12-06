@@ -1,4 +1,4 @@
-#  Contributing to PyTorch Ouf-of-tree TestInfra
+# Contributing to PyTorch Ouf-of-tree Accelerator TestInfra
 
 We want to make contributing to this project as easy and transparent as possible.
 
@@ -11,4 +11,3 @@ We actively welcome your pull requests.
 3. If you've changed APIs, update the documentation.
 4. Ensure the test suite passes.
 5. Make sure your code lints.
-

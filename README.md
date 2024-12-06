@@ -1,4 +1,4 @@
-# PyTorch Out-of-tree TestInfra
+# PyTorch Out-of-tree Accelerator TestInfra
 
 Welcome to the `pytorch-integration-tests` repository! This repository is
 designed to facilitate the integration testing of different accelerators with
@@ -9,7 +9,7 @@ across various devices by running comprehensive GitHub workflows.
 
 <details>
 
-<summary>Torchbenchmark statistics report</summary>
+<summary>Click here to view the torchbenchmark report</summary>
 
 <!-- Torchbenchmark start -->
 
@@ -156,6 +156,12 @@ The workflows are designed to be flexible. You can customize the parameters
 such as the target branch, runner, and loop time by modifying the inputs in
 the workflow files.
 
+## Roadmap
+
+See our [roadmap project][101] for more details.
+
+[101]: https://github.com/orgs/cosdt/projects/7
+
 ## Contributing
 
 We welcome contributions to enhance the integration testing process. Feel free
@@ -166,10 +172,6 @@ compatibility and performance of PyTorch on various devices.
 
 If you encounter any issues while using the workflows or integrating a device,
 please report them via the [Issues](https://github.com/cosdt/pytorch-integration-tests/issues) tab.
-
-## Roadmap
-
-
 
 ## License
 
