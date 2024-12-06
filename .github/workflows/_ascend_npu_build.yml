@@ -39,12 +39,21 @@ jobs:
     outputs:
       dist_name: ${{ steps.list-dist.outputs.dist_name }}
     steps:
+      - name: Config mirrors
+        run: |
+          sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+          pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+
       # TODO(shink): Should we add these dependencies to the image?
       - name: Install system dependencies
         run: |
-          sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
-          apt update
-          apt install --no-install-recommends -y git gcc g++ make cmake ninja-build
+          apt-get update
+          apt-get install -y git gcc g++ make cmake ninja-build
+
+      # See: https://github.com/actions/checkout/issues/363#issuecomment-1915075699
+      - name: Config git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -59,6 +68,15 @@ jobs:
           ref: feat/autoload
           submodules: recursive
           path: torch_npu
+
+      - name: Tmp
+        run: |
+          set -x
+          pwd
+          ls -al .
+          echo $GITHUB_WORKSPACE
+          git status
+          git diff --quiet README.md
 
       - name: Install pip dependencies
         working-directory: torch_npu
