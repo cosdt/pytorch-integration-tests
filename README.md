@@ -146,9 +146,7 @@ triggering the workflows.
 
 ### Customizing Workflows
 
-The workflows are designed to be flexible. You can customize the parameters
-such as the target branch, runner, and loop time by modifying the inputs in
-the workflow files.
+For customize your own workflows, here are some reference configuration in [workflow](https://github.com/cosdt/pytorch-integration-tests/tree/main/.github/workflows).
 
 ## Roadmap
 
