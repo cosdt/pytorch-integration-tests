@@ -1,14 +1,23 @@
 import argparse
 import os
-import sys
+
 from src.benchmark.utils import read_metrics, to_markdown_table
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path", type=str, required=True, help="Report path.")
-    parser.add_argument("--write-gh-job-summary", action="store_true", help="Write to GitHub job summary.")
-    parser.add_argument("--update-readme", action="store_true", help="Update statistics report in README.md.")
+    parser.add_argument(
+        "--path", type=str, required=True, help="The path of benchmark report."
+    )
+    parser.add_argument(
+        "--output", type=str, required=False, help="The output path of the Markdown report."
+    )
+    parser.add_argument(
+        "--write-gh-job-summary", action="store_true", help="Write to GitHub job summary."
+    )
+    parser.add_argument(
+        "--update-readme", action="store_true", help="Update statistics report in README.md."
+    )
     return parser.parse_args()
 
 
@@ -16,6 +25,11 @@ def generate_report(path: str):
     metrics = read_metrics(path, metric="accuracy")
     html_table = to_markdown_table(metrics)
     return html_table
+
+
+def save_output_report(path: str, report):
+    with open(path, "w") as f:
+        f.write(report)
 
 
 def write_job_summary(report):
@@ -54,6 +68,12 @@ if __name__ == "__main__":
 
     # Generate statistics report
     report = generate_report(args.path)
+
+    # Output to markdown report
+    if args.output:
+        save_output_report(args.output, report)
+    else:
+        print(report)
 
     # Write to workflow job summary
     if args.write_gh_job_summary:
