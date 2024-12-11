@@ -136,6 +136,7 @@ jobs:
           path: benchmark/ascend_npu_benchmark.json
           if-no-files-found: error
           retention-days: 1
+          overwrite: true
 
       - name: Write to workflow job summary
         run: |

@@ -1,0 +1,99 @@
+name: '_common_build_torch'
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        required: true
+        type: string
+        description: 'The runner selected to run on'
+      image:
+        required: true
+        type: string
+        description: 'The docker image which will be used to build'
+    outputs:
+      artifact_name:
+        description: 'The torch distribution artifact name'
+        value: ${{ jobs.build.outputs.dist_name }}
+
+# Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
+# declared as "shell: bash -el {0}" on steps that need to be properly activated.
+# It's used to activate ascend-toolkit environment variables.
+defaults:
+  run:
+    shell: bash -el {0}
+
+jobs:
+  build:
+    name: build torch
+    runs-on: ${{ inputs.runner }}
+    container:
+      image: ${{ inputs.image }}
+      options: >-
+        --network host
+      env:
+        HTTP_PROXY: http://127.0.0.1:10809
+        HTTPS_PROXY: http://127.0.0.1:10809
+        ALL_PROXY: socks5://127.0.0.1:10808
+        SOCKS_PROXY: socks5://127.0.0.1:10808
+    outputs:
+      dist_name: ${{ steps.list-dist.outputs.dist_name }}
+    steps:
+      - name: Config mirrors
+        run: |
+          sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
+          pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y git gcc g++ make cmake ninja-build
+
+      # See: https://github.com/actions/checkout/issues/363#issuecomment-1915075699
+      - name: Config git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # TODO
+      - name: Checkout PyTorch
+        uses: actions/checkout@v4
+        with:
+          repository: pytorch/pytorch
+          ref: refs/pull/142477/merge
+          submodules: recursive
+
+      - name: Install pip dependencies
+        working-directory: pytorch
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build torch
+        working-directory: pytorch
+        run: |
+          python setup.py build bdist_wheel
+
+      - name: List distribution package
+        id: list-dist
+        working-directory: pytorch/dist
+        run: |
+          dist_name=$(ls *.whl)
+          dist_path=$(pwd)/${dist_name}
+          echo "dist_name=${dist_name}" >> $GITHUB_OUTPUT
+          echo "dist_path=${dist_path}" >> $GITHUB_OUTPUT
+
+      - name: Upload distribution artifact
+        id: upload-dist
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.list-dist.outputs.dist_name }}
+          path: ${{ steps.list-dist.outputs.dist_path }}
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
+      - name: Write to workflow job summary
+        if: ${{ steps.upload-dist.outputs.artifact-url }}
+        run: |
+          echo "## torch built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})." >> $GITHUB_STEP_SUMMARY

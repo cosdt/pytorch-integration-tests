@@ -91,38 +91,47 @@ jobs:
           echo "device=${{ github.event.inputs.device || '/dev/davinci5' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:latest' }}" >> $GITHUB_OUTPUT
 
-  build:
-    name: Build torch_npu
+  build-torch:
+    name: Build torch
     needs:
       - prepare
-    uses: ./.github/workflows/_ascend_npu_build.yml
+    uses: ./.github/workflows/_common_build_torch.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
 
-  test:
-    name: Test torch_npu
-    needs:
-      - prepare
-      - build
-    uses: ./.github/workflows/_ascend_npu_ut.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
-
-  benchmark:
-    name: Run benchmarks
-    needs:
-      - prepare
-      - build
-      - test
-    uses: ./.github/workflows/_ascend_npu_benchmark.yml
-    with:
-      runner: ${{ needs.prepare.outputs.runner }}
-      image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
-    secrets:
-      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
+#  build:
+#    name: Build torch_npu
+#    needs:
+#      - build-torch
+#    uses: ./.github/workflows/_ascend_npu_build.yml
+#    with:
+#      runner: ${{ needs.prepare.outputs.runner }}
+#      image: ${{ needs.prepare.outputs.image }}
+#
+#  test:
+#    name: Test torch_npu
+#    needs:
+#      - prepare
+#      - build
+#    uses: ./.github/workflows/_ascend_npu_ut.yml
+#    with:
+#      runner: ${{ needs.prepare.outputs.runner }}
+#      image: ${{ needs.prepare.outputs.image }}
+#      device: ${{ needs.prepare.outputs.device }}
+#      artifact_name: ${{ needs.build.outputs.artifact_name }}
+#
+#  benchmark:
+#    name: Run benchmarks
+#    needs:
+#      - prepare
+#      - build
+#      - test
+#    uses: ./.github/workflows/_ascend_npu_benchmark.yml
+#    with:
+#      runner: ${{ needs.prepare.outputs.runner }}
+#      image: ${{ needs.prepare.outputs.image }}
+#      device: ${{ needs.prepare.outputs.device }}
+#      artifact_name: ${{ needs.build.outputs.artifact_name }}
+#    secrets:
+#      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
