@@ -11,9 +11,17 @@ on:
         required: true
         type: string
         description: 'The docker image which will be used to build'
+      ref:
+        required: false
+        type: string
+        default: 'refs/heads/main'
+        description: 'The branch, tag or SHA to checkout'
     outputs:
+      torch_version:
+        description: 'The version of PyTorch'
+        value: ${{ jobs.build.outputs.torch_version }}
       artifact_name:
-        description: 'The torch distribution artifact name'
+        description: 'The distribution artifact name of PyTorch'
         value: ${{ jobs.build.outputs.dist_name }}
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
@@ -38,6 +46,7 @@ jobs:
         SOCKS_PROXY: socks5://127.0.0.1:10808
     outputs:
       dist_name: ${{ steps.list-dist.outputs.dist_name }}
+      torch_version: ${{ steps.list-dist.outputs.torch_version }}
     steps:
       - name: Config mirrors
         run: |
@@ -54,12 +63,11 @@ jobs:
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      # TODO
       - name: Checkout PyTorch
         uses: actions/checkout@v4
         with:
           repository: pytorch/pytorch
-          ref: refs/pull/142477/merge
+          ref: ${{ inputs.ref }}
           submodules: recursive
           path: pytorch
 
@@ -84,8 +92,10 @@ jobs:
         run: |
           dist_name=$(ls *.whl)
           dist_path=$(pwd)/${dist_name}
+          torch_version=$(python -c "import torch; print(torch.__version__)")
           echo "dist_name=${dist_name}" >> $GITHUB_OUTPUT
           echo "dist_path=${dist_path}" >> $GITHUB_OUTPUT
+          echo "torch_version=${torch_version}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
         id: upload-dist
@@ -101,5 +111,5 @@ jobs:
       - name: Write to workflow job summary
         if: ${{ steps.upload-dist.outputs.artifact-url }}
         run: |
-          echo "## torch built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "## torch-${{ steps.list-dist.outputs.torch_version }} built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})." >> $GITHUB_STEP_SUMMARY

@@ -91,6 +91,7 @@ jobs:
           echo "device=${{ github.event.inputs.device || '/dev/davinci5' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:latest' }}" >> $GITHUB_OUTPUT
 
+  # TODO
   build-torch:
     name: Build torch
     needs:
@@ -99,6 +100,7 @@ jobs:
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
+      ref: 'refs/pull/142477/merge'
 
 #  build:
 #    name: Build torch_npu
