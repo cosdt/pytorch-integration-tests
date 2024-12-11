@@ -61,6 +61,13 @@ jobs:
           repository: pytorch/pytorch
           ref: refs/pull/142477/merge
           submodules: recursive
+          path: pytorch
+
+      - name: Show
+        run: |
+          set -e
+          pwd
+          ls -al
 
       - name: Install pip dependencies
         working-directory: pytorch
