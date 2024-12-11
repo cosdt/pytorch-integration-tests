@@ -63,11 +63,10 @@ jobs:
           submodules: recursive
           path: pytorch
 
-      - name: Show
+      - name: View commit history
+        working-directory: pytorch
         run: |
-          set -e
-          pwd
-          ls -al
+          git log -n 10 --graph | cat
 
       - name: Install pip dependencies
         working-directory: pytorch
