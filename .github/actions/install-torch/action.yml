@@ -3,6 +3,7 @@ description: "Install torch built from the build workflow"
 inputs:
   torch-artifact:
     description: "The distribution artifact name of torch"
+    type: string
     required: true
 outputs:
   torch-version:

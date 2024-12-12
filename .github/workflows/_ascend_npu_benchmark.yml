@@ -91,11 +91,29 @@ jobs:
           repository: pytorch/benchmark
           path: benchmark
 
-      - name: Install torch
-        id: install-torch
-        uses: ./.github/actions/install-torch
+      # TODO
+      #- name: Install torch
+      #  id: install-torch
+      #  uses: ./.github/actions/install-torch
+      #  with:
+      #    torch-artifact: ${{ inputs.torch-artifact }}
+
+      - name: Download torch artifact
+        uses: actions/download-artifact@v4
         with:
-          torch-artifact: ${{ inputs.torch-artifact }}
+          name: ${{ inputs.torch-artifact }}
+
+      - name: Install torch
+        shell: bash
+        run: |
+          pip install ${{ inputs.torch-artifact }}
+
+      - name: List torch version
+        id: install-torch
+        shell: bash
+        run: |
+          torch_version=$(python -c "import torch; print(torch.__version__)")
+          echo "torch_version=${torch_version}" >> $GITHUB_OUTPUT
 
       # We must use numpy 1.x
       - name: Generate pip's constraint file
