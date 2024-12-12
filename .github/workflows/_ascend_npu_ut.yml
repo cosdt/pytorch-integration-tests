@@ -15,10 +15,14 @@ on:
         required: true
         type: string
         description: 'The device selected to run on'
-      artifact_name:
+      torch-artifact:
         required: true
         type: string
-        description: 'The torch_npu distribution artifact name'
+        description: 'The distribution artifact name of torch'
+      torch-npu-artifact:
+        required: true
+        type: string
+        description: 'The distribution artifact name of torch_npu'
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
 # declared as "shell: bash -el {0}" on steps that need to be properly activated.
@@ -83,23 +87,36 @@ jobs:
           ref: feat/autoload
           path: torch_npu
 
-      - name: Download distribution artifact
+      - name: Install torch
+        id: install-torch
+        uses: .github/actions/install-torch
+        with:
+          torch-artifact: ${{ inputs.torch-artifact }}
+
+      - name: Generate pip's constraint file
+        working-directory: torch_npu
+        run: |
+          cat > torch-constraint.txt << EOF
+          torch==${{ steps.install-torch.outputs.torch-version }}
+          EOF
+
+      - name: Download torch_npu artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.artifact_name }}
+          name: ${{ inputs.torch-npu-artifact }}
           path: torch_npu
 
       - name: Install pip dependencies
         working-directory: torch_npu
         run: |
           pip install wheel unittest-xml-reporting
-          pip install -r requirements.txt
+          pip install -r requirements.txt --constraint torch-constraint.txt
           pip install -r test/requirements.txt --no-deps
 
       - name: Install torch_npu
         working-directory: torch_npu
         run: |
-          pip install ${{ inputs.artifact_name }}
+          pip install ${{ inputs.torch-npu-artifact }}
 
       # TODO(shink): Skip
       - name: Do the test

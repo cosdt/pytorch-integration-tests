@@ -1,0 +1,29 @@
+name: "Install torch"
+description: "Install torch built from the build workflow"
+inputs:
+  torch-artifact:
+    description: "The distribution artifact name of torch"
+    required: true
+outputs:
+  torch-version:
+    description: "The version of torch"
+    value: ${{ steps.list-torch-version.outputs.torch-version }}
+runs:
+  using: "composite"
+  steps:
+    - name: Download torch artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.torch-artifact }}
+
+    - name: Install torch
+      shell: bash
+      run: |
+        pip install ${{ inputs.torch-artifact }}
+
+    - name: List torch version
+      id: list-torch-version
+      shell: bash
+      run: |
+        torch_version=$(python -c "import torch; print(torch.__version__)")
+        echo "torch_version=${torch_version}" >> $GITHUB_OUTPUT

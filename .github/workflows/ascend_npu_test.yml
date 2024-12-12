@@ -6,7 +6,8 @@ on:
       - 'main'
     paths:
       - '.github/workflows/ascend_npu_test.yml'
-      - '.github/workflows/_ascend_npu_build.yml'
+      - '.github/workflows/_ascend_npu_build_torch.yml'
+      - '.github/workflows/_ascend_npu_build_torch_npu.yml'
       - '.github/workflows/_ascend_npu_ut.yml'
       - '.github/workflows/_ascend_npu_benchmark.yml'
       - '.github/actions/**'
@@ -19,7 +20,8 @@ on:
       - 'main'
     paths:
       - '.github/workflows/ascend_npu_test.yml'
-      - '.github/workflows/_ascend_npu_build.yml'
+      - '.github/workflows/_ascend_npu_build_torch.yml'
+      - '.github/workflows/_ascend_npu_build_torch_npu.yml'
       - '.github/workflows/_ascend_npu_ut.yml'
       - '.github/workflows/_ascend_npu_benchmark.yml'
       - '.github/actions/**'
@@ -69,71 +71,83 @@ on:
         default: '/dev/davinci5'
         description: 'The device selected to run on'
 
-# Only cancel the previous runs when triggered by a pull request
+# Only cancel the previous runs when triggered by a pull_request event or a repository_dispatch event
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'repository_dispatch' }}
 
 jobs:
   prepare:
     name: Prepare
     runs-on: ubuntu-latest
     outputs:
-      runner: ${{ steps.set-param.outputs.runner }}
-      image: ${{ steps.set-param.outputs.image }}
-      device: ${{ steps.set-param.outputs.device }}
+      runner: ${{ steps.set-env.outputs.runner }}
+      image: ${{ steps.set-env.outputs.image }}
+      device: ${{ steps.set-env.outputs.device }}
+      ref: ${{ steps.list-ref.outputs.ref }}
     steps:
-      - name: Set param
-        id: set-param
+      - name: Set environment params
+        id: set-env
         run: |
-          set -e
           echo "runner=${{ github.event.inputs.runner || 'self-hosted' }}" >> $GITHUB_OUTPUT
           echo "device=${{ github.event.inputs.device || '/dev/davinci5' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:latest' }}" >> $GITHUB_OUTPUT
 
-  # TODO
+      # TODO(shink): List ghstack PR's ref
+      - name: List ref to the PyTorch branch
+        id: list-ref
+        run: |
+          # echo "ref=refs/pull/${{ github.event.client_payload.pull_request.number }}/merge" >> $GITHUB_OUTPUT
+          echo "ref=refs/heads/main" >> $GITHUB_OUTPUT
+
   build-torch:
     name: Build torch
     needs:
       - prepare
-    uses: ./.github/workflows/_common_build_torch.yml
+    uses: ./.github/workflows/_ascend_npu_build_torch.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
-      ref: 'refs/pull/142477/merge'
+      ref: ${{ needs.prepare.outputs.ref }}
 
-#  build:
-#    name: Build torch_npu
-#    needs:
-#      - build-torch
-#    uses: ./.github/workflows/_ascend_npu_build.yml
-#    with:
-#      runner: ${{ needs.prepare.outputs.runner }}
-#      image: ${{ needs.prepare.outputs.image }}
-#
-#  test:
-#    name: Test torch_npu
-#    needs:
-#      - prepare
-#      - build
-#    uses: ./.github/workflows/_ascend_npu_ut.yml
-#    with:
-#      runner: ${{ needs.prepare.outputs.runner }}
-#      image: ${{ needs.prepare.outputs.image }}
-#      device: ${{ needs.prepare.outputs.device }}
-#      artifact_name: ${{ needs.build.outputs.artifact_name }}
-#
-#  benchmark:
-#    name: Run benchmarks
-#    needs:
-#      - prepare
-#      - build
-#      - test
-#    uses: ./.github/workflows/_ascend_npu_benchmark.yml
-#    with:
-#      runner: ${{ needs.prepare.outputs.runner }}
-#      image: ${{ needs.prepare.outputs.image }}
-#      device: ${{ needs.prepare.outputs.device }}
-#      artifact_name: ${{ needs.build.outputs.artifact_name }}
-#    secrets:
-#      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
+  build:
+    name: Build torch_npu
+    needs:
+      - prepare
+      - build-torch
+    uses: ./.github/workflows/_ascend_npu_build_torch_npu.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+
+  test:
+    name: Test torch_npu
+    needs:
+      - prepare
+      - build-torch
+      - build
+    uses: ./.github/workflows/_ascend_npu_ut.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+
+  benchmark:
+    name: Run benchmarks
+    needs:
+      - prepare
+      - build-torch
+      - build
+      - test
+    uses: ./.github/workflows/_ascend_npu_benchmark.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}

@@ -1,4 +1,4 @@
-name: '_common_build_torch'
+name: '_ascend_npu_build'
 
 on:
   workflow_call:
@@ -11,14 +11,13 @@ on:
         required: true
         type: string
         description: 'The docker image which will be used to build'
-      ref:
-        required: false
+      torch-artifact:
+        required: true
         type: string
-        default: 'refs/heads/main'
-        description: 'The branch, tag or SHA to checkout'
+        description: 'The distribution artifact name of torch'
     outputs:
-      artifact_name:
-        description: 'The torch distribution artifact name'
+      torch-npu-artifact:
+        description: 'The distribution artifact name of torch_npu'
         value: ${{ jobs.build.outputs.dist_name }}
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
@@ -30,7 +29,7 @@ defaults:
 
 jobs:
   build:
-    name: build torch
+    name: build torch_npu
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
@@ -49,6 +48,7 @@ jobs:
           sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
           pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
+      # TODO(shink): Should we add these dependencies to the image?
       - name: Install system dependencies
         run: |
           apt-get update
@@ -59,34 +59,56 @@ jobs:
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Checkout PyTorch
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout torch_npu
         uses: actions/checkout@v4
         with:
-          repository: pytorch/pytorch
-          ref: ${{ inputs.ref }}
+          # TODO(shink): Use Ascend/pytorch once this pr merged:
+          # https://gitee.com/ascend/pytorch/pulls/12854
+          # repository: Ascend/pytorch
+          repository: shink/torchnpu
+          ref: feat/autoload
           submodules: recursive
-          path: pytorch
+          path: torch_npu
 
-      - name: View commit history
-        working-directory: pytorch
+      - name: Install torch
+        id: install-torch
+        uses: .github/actions/install-torch
+        with:
+          torch-artifact: ${{ inputs.torch-artifact }}
+
+      - name: Generate pip's constraint file
+        working-directory: torch_npu
         run: |
-          git log -n 10 --graph | cat
+          cat > torch-constraint.txt << EOF
+          torch==${{ steps.install-torch.outputs.torch-version }}
+          EOF
 
       - name: Install pip dependencies
-        working-directory: pytorch
+        working-directory: torch_npu
         run: |
-          pip install -r requirements.txt
+          pip install wheel
+          pip install -r requirements.txt --constraint torch-constraint.txt
 
-      - name: Build torch
-        working-directory: pytorch
+      - name: List Python version
+        id: list-py-version
+        working-directory: torch_npu
         run: |
-          python setup.py build bdist_wheel
+          py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
+          echo "py_version=${py_version}" >> $GITHUB_OUTPUT
+
+      - name: Build torch_npu
+        working-directory: torch_npu
+        run: |
+          bash ci/build.sh --python=${{ steps.list-py-version.outputs.py_version }}
 
       - name: List distribution package
         id: list-dist
-        working-directory: pytorch/dist
+        working-directory: torch_npu/dist
         run: |
-          dist_name=$(ls *.whl)
+          dist_name=$(ls torch_npu*.whl)
           dist_path=$(pwd)/${dist_name}
           echo "dist_name=${dist_name}" >> $GITHUB_OUTPUT
           echo "dist_path=${dist_path}" >> $GITHUB_OUTPUT
@@ -105,5 +127,5 @@ jobs:
       - name: Write to workflow job summary
         if: ${{ steps.upload-dist.outputs.artifact-url }}
         run: |
-          echo "## torch built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "## torch_npu built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})." >> $GITHUB_STEP_SUMMARY

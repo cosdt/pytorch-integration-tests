@@ -15,10 +15,14 @@ on:
         required: true
         type: string
         description: 'The device selected to run on'
-      artifact_name:
+      torch-artifact:
         required: true
         type: string
-        description: 'The torch_npu distribution artifact name'
+        description: 'The distribution artifact name of torch'
+      torch-npu-artifact:
+        required: true
+        type: string
+        description: 'The distribution artifact name of torch_npu'
     secrets:
       pr-token:
         description: 'A token used to create a pull request'
@@ -87,6 +91,21 @@ jobs:
           repository: pytorch/benchmark
           path: benchmark
 
+      - name: Install torch
+        id: install-torch
+        uses: .github/actions/install-torch
+        with:
+          torch-artifact: ${{ inputs.torch-artifact }}
+
+      # We must use numpy 1.x
+      - name: Generate pip's constraint file
+        working-directory: ascend_npu
+        run: |
+          cat > constraint.txt << EOF
+          torch==${{ steps.install-torch.outputs.torch-version }}
+          numpy==1.*
+          EOF
+
       - name: Download ${{ inputs.artifact_name }}
         uses: actions/download-artifact@v4
         with:
@@ -98,16 +117,15 @@ jobs:
         run: |
           pip install ${{ inputs.artifact_name }}
 
-      - name: Install torch_npu dependencies
-        working-directory: ascend_npu
-        run: |
-          curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
-          pip install -r requirements.txt
+#      - name: Install torch_npu dependencies
+#        working-directory: ascend_npu
+#        run: |
+#          curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
+#          pip install -r requirements.txt
 
-      # TODO: We must use numpy 1.x
       - name: Install benchmark dependencies
         run: |
-          pip install -r benchmark/requirements.txt --constraint ascend_npu/requirements.txt "numpy==1.*"
+          pip install -r benchmark/requirements.txt --constraint ascend_npu/constraint.txt
           python benchmark/install.py --userbenchmark test_bench --continue_on_fail
 
       - name: Install project dependencies
