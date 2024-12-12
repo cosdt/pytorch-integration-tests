@@ -64,6 +64,7 @@ jobs:
           set -x
           pwd
           ls -al
+          echo ${{ github.workspace }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -76,7 +77,7 @@ jobs:
 
       - name: Install torch
         id: install-torch
-        uses: ./.github/actions/install-torch
+        uses: ${{ github.workspace }}/.github/actions/install-torch
         with:
           torch-artifact: xxx
 
