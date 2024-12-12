@@ -59,6 +59,31 @@ jobs:
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+      - name: Show
+        run: |
+          set -x
+          pwd
+          ls -al
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show
+        run: |
+          set -x
+          pwd
+          ls -al
+
+      - name: Install torch
+        id: install-torch
+        uses: ./.github/actions/install-torch
+        with:
+          torch-artifact: xxx
+
+      - name: Exit
+        run: |
+          exit 1
+
       - name: Checkout PyTorch
         uses: actions/checkout@v4
         with:
