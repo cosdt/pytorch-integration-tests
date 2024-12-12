@@ -11,9 +11,13 @@ on:
         required: true
         type: string
         description: 'The docker image which will be used to build'
+      torch-artifact:
+        required: true
+        type: string
+        description: 'The distribution artifact name of torch'
     outputs:
-      artifact_name:
-        description: 'The torch_npu distribution artifact name'
+      torch-npu-artifact:
+        description: 'The distribution artifact name of torch_npu'
         value: ${{ jobs.build.outputs.dist_name }}
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
@@ -69,11 +73,42 @@ jobs:
           submodules: recursive
           path: torch_npu
 
+      # TODO
+      #- name: Install torch
+      #  id: install-torch
+      #  uses: ./.github/actions/install-torch
+      #  with:
+      #    torch-artifact: ${{ inputs.torch-artifact }}
+
+      - name: Download torch artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.torch-artifact }}
+
+      - name: Install torch
+        shell: bash
+        run: |
+          pip install ${{ inputs.torch-artifact }}
+
+      - name: List torch version
+        id: install-torch
+        shell: bash
+        run: |
+          torch_version=$(python -c "import torch; print(torch.__version__)")
+          echo "torch_version=${torch_version}" >> $GITHUB_OUTPUT
+
+      - name: Generate pip's constraint file
+        working-directory: torch_npu
+        run: |
+          cat > torch-constraint.txt << EOF
+          torch==${{ steps.install-torch.outputs.torch-version }}
+          EOF
+
       - name: Install pip dependencies
         working-directory: torch_npu
         run: |
           pip install wheel
-          pip install -r requirements.txt
+          pip install -r requirements.txt --constraint torch-constraint.txt
 
       - name: List Python version
         id: list-py-version
