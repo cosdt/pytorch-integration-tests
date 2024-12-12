@@ -75,7 +75,7 @@ jobs:
 
       - name: Install torch
         id: install-torch
-        uses: .github/actions/install-torch
+        uses: ./.github/actions/install-torch
         with:
           torch-artifact: ${{ inputs.torch-artifact }}
 
