@@ -86,10 +86,10 @@ jobs:
         id: list-dist
         working-directory: pytorch/dist
         run: |
-          dist-name=$(ls *.whl)
-          dist-path=$(pwd)/${dist-name}
-          echo "dist-name=${dist-name}" >> $GITHUB_OUTPUT
-          echo "dist-path=${dist-path}" >> $GITHUB_OUTPUT
+          dist_name=$(ls torch*.whl)
+          dist_path=$(pwd)/${dist_name}
+          echo "dist-name=${dist_name}" >> $GITHUB_OUTPUT
+          echo "dist-path=${dist_path}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
         id: upload-dist

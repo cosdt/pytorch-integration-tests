@@ -94,8 +94,8 @@ jobs:
         id: install-torch
         shell: bash
         run: |
-          torch-version=$(python -c "import torch; print(torch.__version__)")
-          echo "torch-version=${torch-version}" >> $GITHUB_OUTPUT
+          torch_version=$(python -c "import torch; print(torch.__version__)")
+          echo "torch-version=${torch_version}" >> $GITHUB_OUTPUT
 
       - name: Generate pip's constraint file
         working-directory: torch_npu
@@ -114,8 +114,8 @@ jobs:
         id: list-py-version
         working-directory: torch_npu
         run: |
-          py-version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
-          echo "py-version=${py-version}" >> $GITHUB_OUTPUT
+          py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
+          echo "py-version=${py_version}" >> $GITHUB_OUTPUT
 
       - name: Build torch_npu
         working-directory: torch_npu
@@ -126,10 +126,10 @@ jobs:
         id: list-dist
         working-directory: torch_npu/dist
         run: |
-          dist-name=$(ls torch_npu*.whl)
-          dist-path=$(pwd)/${dist-name}
-          echo "dist-name=${dist-name}" >> $GITHUB_OUTPUT
-          echo "dist-path=${dist-path}" >> $GITHUB_OUTPUT
+          dist_name=$(ls torch_npu*.whl)
+          dist_path=$(pwd)/${dist_name}
+          echo "dist-name=${dist_name}" >> $GITHUB_OUTPUT
+          echo "dist-path=${dist_path}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
         id: upload-dist

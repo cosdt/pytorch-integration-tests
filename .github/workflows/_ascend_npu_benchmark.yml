@@ -112,8 +112,8 @@ jobs:
         id: install-torch
         shell: bash
         run: |
-          torch-version=$(python -c "import torch; print(torch.__version__)")
-          echo "torch-version=${torch-version}" >> $GITHUB_OUTPUT
+          torch_version=$(python -c "import torch; print(torch.__version__)")
+          echo "torch-version=${torch_version}" >> $GITHUB_OUTPUT
 
       # We must use numpy 1.x
       - name: Generate pip's constraint file
