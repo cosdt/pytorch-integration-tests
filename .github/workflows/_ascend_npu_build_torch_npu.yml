@@ -48,7 +48,6 @@ jobs:
           sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
           pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
-      # TODO(shink): Should we add these dependencies to the image?
       - name: Install system dependencies
         run: |
           apt-get update
@@ -92,7 +91,6 @@ jobs:
           name: ${{ inputs.torch-artifact }}
 
       - name: Install torch
-        shell: bash
         run: |
           pip install ${{ inputs.torch-artifact }}
 

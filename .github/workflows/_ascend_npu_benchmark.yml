@@ -104,7 +104,6 @@ jobs:
           name: ${{ inputs.torch-artifact }}
 
       - name: Install torch
-        shell: bash
         run: |
           pip install ${{ inputs.torch-artifact }}
 
@@ -131,6 +130,9 @@ jobs:
           pip install -r benchmark/requirements.txt \
               torch==${{ steps.list-torch-version.outputs.torch-version }} \
               numpy==1.*
+
+      - name: Install dependencies for all the models
+        run: |
           python benchmark/install.py --userbenchmark test_bench --continue_on_fail
 
       - name: Install project dependencies
@@ -151,7 +153,7 @@ jobs:
           python run_benchmark.py test_bench --accuracy --device npu --test eval \
               --output ascend_npu_benchmark.json
 
-      - name: Upload the output file
+      - name: Upload the benchmark report file
         id: upload-output
         uses: actions/upload-artifact@v4
         with:

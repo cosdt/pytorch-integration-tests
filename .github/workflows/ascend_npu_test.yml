@@ -1,4 +1,4 @@
-name: Ascend NPU Test Suite
+name: 'Ascend NPU Test Suite'
 
 on:
   push:
@@ -121,19 +121,19 @@ jobs:
       image: ${{ needs.prepare.outputs.image }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
 
-#  test:
-#    name: Test torch_npu
-#    needs:
-#      - prepare
-#      - build-torch
-#      - build
-#    uses: ./.github/workflows/_ascend_npu_ut.yml
-#    with:
-#      runner: ${{ needs.prepare.outputs.runner }}
-#      image: ${{ needs.prepare.outputs.image }}
-#      device: ${{ needs.prepare.outputs.device }}
-#      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
-#      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+  test:
+    name: Test torch_npu
+    needs:
+      - prepare
+      - build-torch
+      - build
+    uses: ./.github/workflows/_ascend_npu_ut.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
 
   benchmark:
     name: Run benchmarks
@@ -141,6 +141,7 @@ jobs:
       - prepare
       - build-torch
       - build
+      - test
     uses: ./.github/workflows/_ascend_npu_benchmark.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}

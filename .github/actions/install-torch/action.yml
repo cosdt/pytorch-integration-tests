@@ -9,6 +9,8 @@ outputs:
   torch-version:
     description: "The version of torch"
     value: ${{ steps.list-torch-version.outputs.torch-version }}
+
+# TODO: https://github.com/actions/runner/issues/3620
 runs:
   using: "composite"
   steps:
