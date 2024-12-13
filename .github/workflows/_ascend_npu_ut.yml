@@ -90,7 +90,7 @@ jobs:
       - name: Install pip dependencies
         working-directory: torch_npu
         run: |
-          pip install wheel unittest-xml-reporting
+          pip install wheel unittest-xml-reporting tabulate
           pip install -r requirements.txt
           pip install -r test/requirements.txt --no-deps
 
