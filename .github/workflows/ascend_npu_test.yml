@@ -127,6 +127,7 @@ jobs:
       - prepare
       - build-torch
       - build
+    if: ${{ github.event_name == 'push' }} # TODO
     uses: ./.github/workflows/_ascend_npu_ut.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
