@@ -116,6 +116,7 @@ jobs:
     needs:
       - prepare
       - build-torch
+    if: ${{ success() || cancelled() }}
     uses: ./.github/workflows/_ascend_npu_build_torch_npu.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
