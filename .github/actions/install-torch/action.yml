@@ -26,5 +26,5 @@ runs:
       id: list-torch-version
       shell: bash
       run: |
-        torch-version=$(python -c "import torch; print(torch.__version__)")
-        echo "torch-version=${torch-version}" >> $GITHUB_OUTPUT
+        torch_version=$(python -c "import torch; print(torch.__version__)")
+        echo "torch-version=${torch_version}" >> $GITHUB_OUTPUT

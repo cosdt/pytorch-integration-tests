@@ -108,42 +108,20 @@ jobs:
         run: |
           pip install ${{ inputs.torch-artifact }}
 
-      - name: List torch version
-        id: install-torch
-        shell: bash
-        run: |
-          torch_version=$(python -c "import torch; print(torch.__version__)")
-          echo "torch-version=${torch_version}" >> $GITHUB_OUTPUT
-
-      # We must use numpy 1.x
-      - name: Generate pip's constraint file
-        working-directory: ascend_npu
-        run: |
-          cat > constraint.txt << EOF
-          torch==${{ steps.install-torch.outputs.torch-version }}
-          numpy==1.*
-          EOF
-
-      - name: Download ${{ inputs.artifact_name }}
+      - name: Download torch_npu artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.artifact_name }}
+          name: ${{ inputs.torch-npu-artifact }}
           path: ascend_npu
 
       - name: Install torch_npu
         working-directory: ascend_npu
         run: |
-          pip install ${{ inputs.artifact_name }}
-
-      #- name: Install torch_npu dependencies
-      #  working-directory: ascend_npu
-      #  run: |
-      #    curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
-      #    pip install -r requirements.txt
+          pip install ${{ inputs.torch-npu-artifact }}
 
       - name: Install benchmark dependencies
         run: |
-          pip install -r benchmark/requirements.txt --constraint ascend_npu/constraint.txt
+          pip install -r benchmark/requirements.txt numpy==1.*
           python benchmark/install.py --userbenchmark test_bench --continue_on_fail
 
       - name: Install project dependencies
