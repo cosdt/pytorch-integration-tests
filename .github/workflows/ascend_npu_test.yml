@@ -121,7 +121,7 @@ jobs:
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
-      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact || null }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
 
   test:
     name: Test torch_npu
