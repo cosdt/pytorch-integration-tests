@@ -19,7 +19,7 @@ on:
     outputs:
       torch-artifact:
         description: 'The distribution artifact name of torch'
-        value: ${{ jobs.build.outputs.dist_name }}
+        value: ${{ jobs.build.outputs.dist-name }}
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
 # declared as "shell: bash -el {0}" on steps that need to be properly activated.
@@ -42,7 +42,7 @@ jobs:
         ALL_PROXY: socks5://127.0.0.1:10808
         SOCKS_PROXY: socks5://127.0.0.1:10808
     outputs:
-      dist_name: ${{ steps.list-dist.outputs.dist_name }}
+      dist-name: ${{ steps.list-dist.outputs.dist-name }}
     steps:
       - name: Config mirrors
         run: |
@@ -86,18 +86,18 @@ jobs:
         id: list-dist
         working-directory: pytorch/dist
         run: |
-          dist_name=$(ls *.whl)
-          dist_path=$(pwd)/${dist_name}
-          echo "dist_name=${dist_name}" >> $GITHUB_OUTPUT
-          echo "dist_path=${dist_path}" >> $GITHUB_OUTPUT
+          dist-name=$(ls *.whl)
+          dist-path=$(pwd)/${dist-name}
+          echo "dist-name=${dist-name}" >> $GITHUB_OUTPUT
+          echo "dist-path=${dist-path}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
         id: upload-dist
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.list-dist.outputs.dist_name }}
-          path: ${{ steps.list-dist.outputs.dist_path }}
+          name: ${{ steps.list-dist.outputs.dist-name }}
+          path: ${{ steps.list-dist.outputs.dist-path }}
           if-no-files-found: error
           retention-days: 1
           overwrite: true

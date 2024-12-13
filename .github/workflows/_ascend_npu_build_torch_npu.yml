@@ -18,7 +18,7 @@ on:
     outputs:
       torch-npu-artifact:
         description: 'The distribution artifact name of torch_npu'
-        value: ${{ jobs.build.outputs.dist_name }}
+        value: ${{ jobs.build.outputs.dist-name }}
 
 # Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
 # declared as "shell: bash -el {0}" on steps that need to be properly activated.
@@ -41,7 +41,7 @@ jobs:
         ALL_PROXY: socks5://127.0.0.1:10808
         SOCKS_PROXY: socks5://127.0.0.1:10808
     outputs:
-      dist_name: ${{ steps.list-dist.outputs.dist_name }}
+      dist-name: ${{ steps.list-dist.outputs.dist-name }}
     steps:
       - name: Config mirrors
         run: |
@@ -94,8 +94,8 @@ jobs:
         id: install-torch
         shell: bash
         run: |
-          torch_version=$(python -c "import torch; print(torch.__version__)")
-          echo "torch_version=${torch_version}" >> $GITHUB_OUTPUT
+          torch-version=$(python -c "import torch; print(torch.__version__)")
+          echo "torch-version=${torch-version}" >> $GITHUB_OUTPUT
 
       - name: Generate pip's constraint file
         working-directory: torch_npu
@@ -114,30 +114,30 @@ jobs:
         id: list-py-version
         working-directory: torch_npu
         run: |
-          py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
-          echo "py_version=${py_version}" >> $GITHUB_OUTPUT
+          py-version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
+          echo "py-version=${py-version}" >> $GITHUB_OUTPUT
 
       - name: Build torch_npu
         working-directory: torch_npu
         run: |
-          bash ci/build.sh --python=${{ steps.list-py-version.outputs.py_version }}
+          bash ci/build.sh --python=${{ steps.list-py-version.outputs.py-version }}
 
       - name: List distribution package
         id: list-dist
         working-directory: torch_npu/dist
         run: |
-          dist_name=$(ls torch_npu*.whl)
-          dist_path=$(pwd)/${dist_name}
-          echo "dist_name=${dist_name}" >> $GITHUB_OUTPUT
-          echo "dist_path=${dist_path}" >> $GITHUB_OUTPUT
+          dist-name=$(ls torch_npu*.whl)
+          dist-path=$(pwd)/${dist-name}
+          echo "dist-name=${dist-name}" >> $GITHUB_OUTPUT
+          echo "dist-path=${dist-path}" >> $GITHUB_OUTPUT
 
       - name: Upload distribution artifact
         id: upload-dist
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.list-dist.outputs.dist_name }}
-          path: ${{ steps.list-dist.outputs.dist_path }}
+          name: ${{ steps.list-dist.outputs.dist-name }}
+          path: ${{ steps.list-dist.outputs.dist-path }}
           if-no-files-found: error
           retention-days: 1
           overwrite: true

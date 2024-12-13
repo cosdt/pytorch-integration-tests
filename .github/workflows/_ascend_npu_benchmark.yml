@@ -112,8 +112,8 @@ jobs:
         id: install-torch
         shell: bash
         run: |
-          torch_version=$(python -c "import torch; print(torch.__version__)")
-          echo "torch_version=${torch_version}" >> $GITHUB_OUTPUT
+          torch-version=$(python -c "import torch; print(torch.__version__)")
+          echo "torch-version=${torch-version}" >> $GITHUB_OUTPUT
 
       # We must use numpy 1.x
       - name: Generate pip's constraint file
@@ -135,11 +135,11 @@ jobs:
         run: |
           pip install ${{ inputs.artifact_name }}
 
-#      - name: Install torch_npu dependencies
-#        working-directory: ascend_npu
-#        run: |
-#          curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
-#          pip install -r requirements.txt
+      #- name: Install torch_npu dependencies
+      #  working-directory: ascend_npu
+      #  run: |
+      #    curl -fsSL -O https://raw.githubusercontent.com/Ascend/pytorch/refs/heads/master/requirements.txt
+      #    pip install -r requirements.txt
 
       - name: Install benchmark dependencies
         run: |
