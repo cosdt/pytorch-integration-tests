@@ -43,19 +43,6 @@ jobs:
     outputs:
       dist-name: ${{ steps.list-dist.outputs.dist-name }}
     steps:
-      - name: Hit
-        if: ${{ inputs.torch-artifact }}
-        run: |
-          set -x
-          echo ${{ inputs.torch-artifact }}
-          exit 1
-
-      - name: Hit
-        run: |
-          set -x
-          echo ${{ inputs.torch-artifact }}
-          exit 1
-
       - name: Config mirrors
         run: |
           sed -i 's|ports.ubuntu.com|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list
@@ -99,11 +86,13 @@ jobs:
       #     artifact: ${{ inputs.torch-artifact }}
 
       - name: Download torch artifact
+        if: ${{ inputs.torch-artifact }}
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.torch-artifact }}
 
       - name: Install torch
+        if: ${{ inputs.torch-artifact }}
         run: |
           pip install ${{ inputs.torch-artifact }}
 

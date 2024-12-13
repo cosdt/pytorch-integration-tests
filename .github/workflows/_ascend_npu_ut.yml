@@ -102,11 +102,13 @@ jobs:
       #     artifact: ${{ inputs.torch-artifact }}
 
       - name: Download torch artifact
+        if: ${{ inputs.torch-artifact }}
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.torch-artifact }}
 
       - name: Install torch
+        if: ${{ inputs.torch-artifact }}
         run: |
           pip install ${{ inputs.torch-artifact }}
 
