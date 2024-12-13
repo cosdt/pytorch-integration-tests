@@ -95,11 +95,11 @@ jobs:
           pip install -r test/requirements.txt --no-deps
 
       # TODO
-      #- name: Install torch
-      #  id: install-torch
-      #  uses: ./.github/actions/install-torch
-      #  with:
-      #    torch-artifact: ${{ inputs.torch-artifact }}
+      # - name: Install torch
+      #   id: install-torch
+      #   uses: ./.github/actions/install-artifact
+      #   with:
+      #     artifact: ${{ inputs.torch-artifact }}
 
       - name: Download torch artifact
         uses: actions/download-artifact@v4
