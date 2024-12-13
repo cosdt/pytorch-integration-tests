@@ -16,7 +16,7 @@ on:
         type: string
         description: 'The device selected to run on'
       torch-artifact:
-        required: true
+        required: false
         type: string
         description: 'The distribution artifact name of torch'
       torch-npu-artifact:

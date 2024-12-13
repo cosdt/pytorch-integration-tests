@@ -116,7 +116,7 @@ jobs:
     needs:
       - prepare
       - build-torch
-    if: ${{ always() }}
+    if: ${{ success() || needs.build-torch.result == 'skipped'}}
     uses: ./.github/workflows/_ascend_npu_build_torch_npu.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
@@ -129,6 +129,7 @@ jobs:
       - prepare
       - build-torch
       - build
+    if: ${{ success() || needs.build-torch.result == 'skipped'}}
     uses: ./.github/workflows/_ascend_npu_ut.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
@@ -144,6 +145,7 @@ jobs:
       - build-torch
       - build
       - test
+    if: ${{ success() || needs.build-torch.result == 'skipped'}}
     uses: ./.github/workflows/_ascend_npu_benchmark.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}

@@ -72,7 +72,7 @@ jobs:
         run: |
           git log -n 10 --graph | cat
 
-      - name: Install pip dependencies
+      - name: Install torch dependencies
         working-directory: pytorch
         run: |
           pip install -r requirements.txt

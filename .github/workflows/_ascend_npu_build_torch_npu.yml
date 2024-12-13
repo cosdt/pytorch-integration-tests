@@ -72,7 +72,7 @@ jobs:
           submodules: recursive
           path: torch_npu
 
-      - name: Install pip dependencies
+      - name: Install torch_npu dependencies
         working-directory: torch_npu
         run: |
           pip install wheel
