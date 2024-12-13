@@ -43,7 +43,16 @@ jobs:
     outputs:
       dist-name: ${{ steps.list-dist.outputs.dist-name }}
     steps:
-      - run: |
+      - name: Hit
+        if: ${{ inputs.torch-artifact }}
+        run: |
+          set -x
+          echo ${{ inputs.torch-artifact }}
+          exit 1
+
+      - name: Hit
+        run: |
+          set -x
           echo ${{ inputs.torch-artifact }}
           exit 1
 
