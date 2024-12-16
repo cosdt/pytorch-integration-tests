@@ -1,0 +1,68 @@
+name: 'List Pull Requests'
+description: 'list and put output pull requests'
+inputs:
+  owner:
+    description: 'The repository owner'
+    required: true
+  repository:
+    description: 'The repository name'
+    required: true
+  token:
+    description: 'The GitHub token used to create an authenticated client'
+    default: ${{ github.token }}
+    required: false
+  labels:
+    description: 'The labels on pull requests'
+    required: false
+    default: ''
+  hours:
+    description: 'Pull requests created within this many hours will be listed'
+    required: false
+    default: ''
+outputs:
+  result:
+    description: 'Pull requests to be listed'
+    value: ${{ steps.list-pr.outputs.result }}
+runs:
+  using: "composite"
+  steps:
+    # See https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
+    - name: List PRs
+      uses: actions/github-script@v7
+      id: list-pr
+      with:
+        token: ${{ inputs.token }}
+        result-encoding: string
+        script: |
+          const resp = await github.rest.pulls.list({
+              owner: '${{ inputs.owner }}',
+              repo: '${{ inputs.repository }}',
+              state: 'open',
+              sort: 'created',
+              per_page: 100
+          }).catch(
+              e => {
+                  core.setFailed(e.message)
+              }
+          );
+
+          const pr_numbers = resp.data.map(pr => pr.number);
+          core.info(`prs: ${pr_numbers.join(",")}`);
+
+          const prs = resp.data.map(pr => {
+              return {
+                  number: pr.number,
+                  title: pr.title,
+                  body: pr.body,
+                  state: pr.state,
+                  draft: pr.draft,
+                  created_at: pr.created_at,
+                  updated_at: pr.updated_at,
+                  closed_at: pr.closed_at,
+                  merged_at: pr.merged_at,
+                  html_url: pr.html_url,
+                  base: pr.base.ref,
+                  head: pr.head.ref,
+                  labels: pr.labels.map(label => label.name)
+              };
+          });
