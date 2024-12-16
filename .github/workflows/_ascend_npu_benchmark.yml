@@ -138,13 +138,13 @@ jobs:
               torch==${{ steps.list-torch-version.outputs.torch-version }} \
               numpy==1.*
 
-      - name: Install nightly torchvision and torchaudio
-        run: |
-          pip install --pre torchvision torchaudio --no-deps --index-url https://download.pytorch.org/whl/nightly/cpu
-
       - name: Install dependencies for all the models
         run: |
           python benchmark/install.py --userbenchmark test_bench --continue_on_fail
+
+      - name: Install nightly torchvision and torchaudio
+        run: |
+          pip install --pre torchvision torchaudio --no-deps --index-url https://download.pytorch.org/whl/nightly/cpu
 
       - name: Install project dependencies
         run: |
