@@ -71,18 +71,20 @@ runs:
           }
 
           const result = prs.map(pr => ({
-            number: pr.number,
-            title: pr.title,
-            state: pr.state,
-            draft: pr.draft,
-            created_at: pr.created_at,
-            updated_at: pr.updated_at,
-            closed_at: pr.closed_at,
-            merged_at: pr.merged_at,
-            html_url: pr.html_url,
-            base: pr.base.ref,
-            head: pr.head.ref,
-            labels: pr.labels.map(label => label.name),
+            pull_request: {
+              number: pr.number,
+              title: pr.title,
+              state: pr.state,
+              draft: pr.draft,
+              created_at: pr.created_at,
+              updated_at: pr.updated_at,
+              closed_at: pr.closed_at,
+              merged_at: pr.merged_at,
+              html_url: pr.html_url,
+              base: pr.base.ref,
+              head: pr.head.ref,
+              labels: pr.labels.map(label => label.name),
+            }
           }));
 
           return JSON.stringify(result);
