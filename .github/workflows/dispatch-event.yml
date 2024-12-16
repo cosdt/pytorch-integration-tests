@@ -1,4 +1,4 @@
-name: 'Dispatch PR events'
+name: 'Dispatch PyTorch events'
 
 on:
   schedule:

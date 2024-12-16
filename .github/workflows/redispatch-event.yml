@@ -1,4 +1,4 @@
-name: Handle events from PyTorch
+name: 'Redispatch PyTorch events'
 
 on:
   repository_dispatch:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   redispatch-pr-event:
-    name: Redispatch PyTorch event
+    name: Redispatch PyTorch events
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
