@@ -48,7 +48,7 @@ jobs:
           owner: pytorch
           repository: pytorch
           labels: ${{ github.event.inputs.labels || '' }}
-          hours: ${{ github.event.inputs.hours || '1' }}
+          hours: ${{ github.event.inputs.hours || '24' }}
 
   dispatch-pr:
     name: 'Dispatch PR event - #${{ matrix.data.pull_request.number }}'
