@@ -33,6 +33,7 @@ runs:
       with:
         token: ${{ inputs.token }}
         result-encoding: string
+        debug: true
         script: |
           const resp = await github.paginate(github.rest.pulls.list, {
             owner: "pytorch",
