@@ -37,7 +37,7 @@ jobs:
 
       - name: Print pull request info
         run: |
-          echo ${{ steps.list-pr.outputs.prs }}
+          echo ${{ fromJson(steps.list-pr.outputs.prs) }}
 
   dispatch-pr:
     name: 'Dispatch PR event - #${{ matrix.pr.number }}'
