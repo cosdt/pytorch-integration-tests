@@ -35,10 +35,6 @@ jobs:
           repository: pytorch
           hours: 24
 
-      - name: Print pull request info
-        run: |
-          echo ${{ fromJson(steps.list-pr.outputs.prs) }}
-
   dispatch-pr:
     name: 'Dispatch PR event - #${{ matrix.pr.number }}'
     runs-on: ubuntu-latest
@@ -48,11 +44,11 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        pr: ${{ fromJson(needs.list-pr.outputs.prs) }}
+        pr: ${{ needs.list-pr.outputs.prs }}
     steps:
       - name: Print pull request info
         run: |
-          echo ${{ matrix.pr }}
+          echo ${{ toJson(matrix.pr) }}
 
       - name: Dispatch PR events to be out-of-tree test infra
         uses: peter-evans/repository-dispatch@v3
