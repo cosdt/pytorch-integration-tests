@@ -31,9 +31,8 @@ runs:
       uses: actions/github-script@v7
       id: list-pr
       with:
-        token: ${{ inputs.token }}
+        github-token: ${{ inputs.token }}
         result-encoding: string
-        debug: true
         script: |
           const timeRange = parseInt("24") * 60 * 60 * 1000;
           const sinceTime = new Date(Date.now() - timeRange).toISOString();
@@ -68,7 +67,7 @@ runs:
 
           if (prs.length > 0) {
             const pr_urls = prs.map(pr => pr.html_url);
-            core.info(`prs: ${pr_urls.join(",\n")}`);
+            core.info(`prs: ${pr_urls.join("\n")}`);
           }
 
           return prs.map(pr => ({

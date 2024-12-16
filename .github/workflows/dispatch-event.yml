@@ -35,12 +35,18 @@ jobs:
           repository: pytorch
           hours: 24
 
+      - name: Print pull request info
+        run: |
+          echo ${{ steps.list-pr.outputs.prs }}
+
   dispatch-pr:
     name: 'Dispatch PR event - #${{ matrix.pr.number }}'
     runs-on: ubuntu-latest
     needs:
       - list-pr
     strategy:
+      fail-fast: false
+      max-parallel: 1
       matrix:
         pr: ${{ fromJson(needs.list-pr.outputs.prs) }}
     steps:
