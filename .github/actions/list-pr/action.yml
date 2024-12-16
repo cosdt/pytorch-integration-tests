@@ -18,7 +18,7 @@ inputs:
   hours:
     description: 'Pull requests created within this many hours will be listed'
     required: false
-    default: ''
+    default: '24'
 outputs:
   result:
     description: 'Pull requests to be listed'
@@ -46,10 +46,27 @@ runs:
               }
           );
 
-          const pr_numbers = resp.data.map(pr => pr.number);
-          core.info(`prs: ${pr_numbers.join(",")}`);
+          const timeRange = parseInt(${{ inputs.hours }}) * 60 * 60 * 1000;
+          const sinceTime = new Date(Date.now() - timeRange).toISOString();
+          const input_labels = ${{ inputs.labels }};
+          const labels = input_labels
+            ? input_labels.split(',|\n').map(label => label.trim())
+            : [];
 
-          const prs = resp.data.map(pr => {
+          const prs = resp.data.filter(pr => {
+              const hasLabel = labels.length === 0
+                  || labels.every(label => pr.labels.some(prLabel => prLabel.name === label));
+
+              const createdAt = new Date(pr.created_at);
+              const isWithinTimeRange = createdAt >= new Date(sinceTime);
+
+              return hasLabel && isWithinTimeRange;
+          });
+
+          const pr_urls = prs.map(pr => pr.html_url);
+          core.info(`prs: ${pr_urls.join(",\n")}`);
+
+          return prs.map(pr => {
               return {
                   number: pr.number,
                   title: pr.title,
