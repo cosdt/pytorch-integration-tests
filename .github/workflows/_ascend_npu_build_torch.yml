@@ -11,6 +11,10 @@ on:
         required: true
         type: string
         description: 'The docker image which will be used to build'
+      pr-number:
+        required: false
+        type: number
+        description: 'The number of pull request'
       ref:
         required: false
         type: string
@@ -30,7 +34,7 @@ defaults:
 
 jobs:
   build:
-    name: build torch
+    name: build torch for ${{ inputs.pr-number && format('#{0}', inputs.pr-numer) || inputs.ref }}
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}

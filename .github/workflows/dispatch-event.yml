@@ -1,15 +1,21 @@
 name: 'Dispatch PR events'
 
 on:
-  pull_request:
-    branches:
-      - 'main'
-    paths:
-      - '.github/workflows/per-pr.yml'
-      - '.github/actions/list-pr/**'
-      - '!**/*.md'
   schedule:
     - cron: '0 12 * * *'
+
+  workflow_dispatch:
+    inputs:
+      labels:
+        required: false
+        type: string
+        default: ''
+        description: 'The labels on pull requests'
+      hours:
+        required: false
+        type: number
+        default: 24
+        description: 'Pull requests created within this many hours will be listed'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
@@ -33,7 +39,8 @@ jobs:
           token: ${{ secrets.COSDT_BOT_TOKEN }}
           owner: pytorch
           repository: pytorch
-          hours: 24
+          labels: ${{ github.event.inputs.labels || '' }}
+          hours: ${{ github.event.inputs.hours || '24' }}
 
   dispatch-pr:
     name: 'Dispatch PR event - #${{ matrix.data.pull_request.number }}'
