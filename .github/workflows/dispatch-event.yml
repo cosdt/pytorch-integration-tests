@@ -55,6 +55,6 @@ jobs:
           client-payload: |-
             {
               "pull_request": {
-                number: ${{ matrix.pr.number }},
+                number: "${{ matrix.pr.number }}",
               }
             }
