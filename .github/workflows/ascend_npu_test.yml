@@ -138,20 +138,20 @@ jobs:
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
 
-#  benchmark:
-#    name: Run benchmarks
-#    needs:
-#      - prepare
-#      - build-torch
-#      - build
-#      - test
-#    if: ${{ success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success') }}
-#    uses: ./.github/workflows/_ascend_npu_benchmark.yml
-#    with:
-#      runner: ${{ needs.prepare.outputs.runner }}
-#      image: ${{ needs.prepare.outputs.image }}
-#      device: ${{ needs.prepare.outputs.device }}
-#      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
-#      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
-#    secrets:
-#      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
+  benchmark:
+    name: Run benchmarks
+    needs:
+      - prepare
+      - build-torch
+      - build
+      - test
+    if: ${{ success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success') }}
+    uses: ./.github/workflows/_ascend_npu_benchmark.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
