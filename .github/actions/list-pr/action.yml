@@ -20,7 +20,7 @@ inputs:
     required: false
     default: '24'
 outputs:
-  result:
+  prs:
     description: 'Pull requests to be listed'
     value: ${{ steps.list-pr.outputs.result }}
 runs:
