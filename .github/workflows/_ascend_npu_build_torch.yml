@@ -34,7 +34,7 @@ defaults:
 
 jobs:
   build:
-    name: build torch for ${{ inputs.pr-number && format('#{0}', inputs.pr-numer) || inputs.ref }}
+    name: build torch for ${{ inputs.pr-number && format('#{0}', inputs.pr-number) || inputs.ref }}
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
