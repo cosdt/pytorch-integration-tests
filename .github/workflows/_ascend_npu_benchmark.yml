@@ -36,7 +36,7 @@ defaults:
     shell: bash -el {0}
 
 jobs:
-  test:
+  benchmark:
     name: run benchmarks for torch_npu
     runs-on: ${{ inputs.runner }}
     env:

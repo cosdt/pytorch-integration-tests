@@ -50,9 +50,10 @@ on:
         required: true
         type: choice
         options:
-          - ascendai/cann:7.1-openeuler2203sp2
-          - ascendai/cann:8.0.rc2.alpha003-910b-ubuntu22.04-py3.9
-          - ascendai/cann:8.0.rc3.alpha002-910b-ubuntu22.04-py3.9
+          - 7.0.1.beta1-910b-ubuntu22.04-py3.8
+          - 8.0.rc1.beta1-910b-ubuntu22.04-py3.8
+          - 8.0.rc2.beta1-910b-ubuntu22.04-py3.9
+          - 8.0.rc3.beta1-910b-ubuntu22.04-py3.10
           - ascendai/cann:latest
         default: 'ascendai/cann:latest'
         description: 'The docker image which will be loaded'
@@ -153,5 +154,19 @@ jobs:
       device: ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
+
+  # TODO
+  pr-comment:
+    name: Comment report on upstream PRs
+    needs:
+      - benchmark
+    if: ${{ github.event_name == 'repository_dispatch' }}
+    uses: ./.github/workflows/_pytorch_pr_comment.yml
+    with:
+      repository: cosdt/pytorch-upstream
+      pr-number: 1
+      pr-comment-author: cosdt-bot
     secrets:
       pr-token: ${{ secrets.COSDT_BOT_TOKEN }}

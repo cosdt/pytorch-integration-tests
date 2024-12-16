@@ -1,0 +1,70 @@
+name: '_pytorch_pr_comment'
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: false
+        type: string
+        default: 'pytorch/pytorch'
+        description: 'The full name of the repository containing the pull request'
+      pr-number:
+        required: true
+        type: number
+        description: 'The number of the pull request'
+      pr-comment-author:
+        required: true
+        type: string
+        description: 'The author of the pull request comment'
+    secrets:
+      pr-token:
+        required: true
+        description: 'A token used to create or update a pull request comment'
+
+jobs:
+  comment:
+    name: Create or update the pull request comment
+    runs-on: ubuntu-latest
+    steps:
+      # Find the first comment containing the specified string
+      # and by the specified author.
+      # See: https://github.com/peter-evans/find-comment
+      - name: Find comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          token: ${{ secrets.pr-token }}
+          repository: ${{ inputs.repository }}
+          issue-number: ${{ inputs.pr-number }}
+          comment-author: ${{ inputs.pr-comment-author }}
+          body-includes: '<!-- ACCELERATOR TESTINFRA START -->'
+
+      - name: Show comment info
+        run: |
+          echo "comment id: ${{ steps.fc.outputs.comment-id }}"
+          echo "comment node id: ${{ steps.fc.outputs.comment-node-id }}"
+          echo "comment body: ${{ steps.fc.outputs.comment-body }}"
+          echo "comment author: ${{ steps.fc.outputs.comment-author }}"
+          echo "comment created at: ${{ steps.fc.outputs.comment-created-at }}"
+
+      # Create or update the comment just found.
+      # See: https://github.com/peter-evans/create-or-update-comment
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.pr-token }}
+          repository: ${{ inputs.repository }}
+          issue-number: ${{ inputs.pr-number }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          # TODO: use body-path instead
+          body: |
+            <!-- ACCELERATOR TESTINFRA START -->
+
+            ## Report
+
+            - something
+            - something else
+            - other things
+
+            <!-- ACCELERATOR TESTINFRA END -->
