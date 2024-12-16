@@ -52,7 +52,7 @@ runs:
             : [];
 
           const prs = [];
-          for (const resp of pullsResp) {
+          for await (const resp of pullsResp) {
             const filtered_prs = resp.data.filter(pr => {
               const hasLabel = labels.length === 0
                 || labels.every(label => pr.labels.some(prLabel => prLabel.name === label));
