@@ -35,23 +35,19 @@ runs:
         result-encoding: string
         script: |
           const resp = await github.rest.pulls.list({
-              owner: '${{ inputs.owner }}',
-              repo: '${{ inputs.repository }}',
+              owner: inputs.owner,
+              repo: inputs.repository,
               state: 'open',
               sort: 'created',
               per_page: 100
-          }).catch(
-              e => {
-                  core.setFailed(e.message)
-              }
-          );
+          });
 
-          const timeRange = parseInt(${{ inputs.hours }}) * 60 * 60 * 1000;
+          const timeRange = parseInt(inputs.hours) * 60 * 60 * 1000;
           const sinceTime = new Date(Date.now() - timeRange).toISOString();
-          const input_labels = ${{ inputs.labels }};
+          const input_labels = inputs.labels;
           const labels = input_labels
-            ? input_labels.split(',|\n').map(label => label.trim())
-            : [];
+              ? input_labels.split(/,|\n/).map(label => label.trim())
+              : [];
 
           const prs = resp.data.filter(pr => {
               const hasLabel = labels.length === 0
@@ -66,20 +62,18 @@ runs:
           const pr_urls = prs.map(pr => pr.html_url);
           core.info(`prs: ${pr_urls.join(",\n")}`);
 
-          return prs.map(pr => {
-              return {
-                  number: pr.number,
-                  title: pr.title,
-                  body: pr.body,
-                  state: pr.state,
-                  draft: pr.draft,
-                  created_at: pr.created_at,
-                  updated_at: pr.updated_at,
-                  closed_at: pr.closed_at,
-                  merged_at: pr.merged_at,
-                  html_url: pr.html_url,
-                  base: pr.base.ref,
-                  head: pr.head.ref,
-                  labels: pr.labels.map(label => label.name)
-              };
-          });
+          return prs.map(pr => ({
+              number: pr.number,
+              title: pr.title,
+              body: pr.body,
+              state: pr.state,
+              draft: pr.draft,
+              created_at: pr.created_at,
+              updated_at: pr.updated_at,
+              closed_at: pr.closed_at,
+              merged_at: pr.merged_at,
+              html_url: pr.html_url,
+              base: pr.base.ref,
+              head: pr.head.ref,
+              labels: pr.labels.map(label => label.name)
+          }));
