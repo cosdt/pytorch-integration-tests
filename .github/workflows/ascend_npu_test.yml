@@ -83,6 +83,7 @@ jobs:
       image: ${{ steps.set-env.outputs.image }}
       device: ${{ steps.set-env.outputs.device }}
       ref: ${{ steps.list-ref.outputs.ref }}
+      pr-number: ${{ steps.list-ref.outputs.pr-number }}
     steps:
       - name: Set environment params
         id: set-env
