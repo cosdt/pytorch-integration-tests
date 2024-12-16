@@ -73,7 +73,6 @@ runs:
           const result = prs.map(pr => ({
             number: pr.number,
             title: pr.title,
-            body: pr.body,
             state: pr.state,
             draft: pr.draft,
             created_at: pr.created_at,
