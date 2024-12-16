@@ -46,10 +46,6 @@ jobs:
       matrix:
         pr: ${{ fromJson(needs.list-pr.outputs.prs) }}
     steps:
-      - name: Print pull request info
-        run: |
-          echo ${{ toJson(matrix.pr) }}
-
       - name: Dispatch PR events to be out-of-tree test infra
         uses: peter-evans/repository-dispatch@v3
         with:
