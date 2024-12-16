@@ -35,11 +35,12 @@ runs:
         result-encoding: string
         debug: true
         script: |
-          const resp = await github.paginate(github.rest.pulls.list, {
+          const pullsResp = await github.paginate(github.rest.pulls.list, {
             owner: "pytorch",
             repo: "pytorch",
             state: "open",
             sort: "created",
+            direction: "desc",
             per_page: 100,
           });
 
@@ -50,15 +51,20 @@ runs:
             ? input_labels.split(/[,\n]/).map(label => label.trim())
             : [];
 
-          const prs = resp.data.filter(pr => {
-            const hasLabel = labels.length === 0
-              || labels.every(label => pr.labels.some(prLabel => prLabel.name === label));
+          const prs = [];
+          for (const resp of pullsResp) {
+            const filtered_prs = resp.data.filter(pr => {
+              const hasLabel = labels.length === 0
+                || labels.every(label => pr.labels.some(prLabel => prLabel.name === label));
 
-            const createdAt = new Date(pr.created_at);
-            const isWithinTimeRange = createdAt >= new Date(sinceTime);
+              const createdAt = new Date(pr.created_at);
+              const isWithinTimeRange = createdAt >= new Date(sinceTime);
 
-            return hasLabel && isWithinTimeRange;
-          });
+              return hasLabel && isWithinTimeRange;
+            });
+
+            prs.push(...filtered_prs);
+          }
 
           if (prs.length > 0) {
             const pr_urls = prs.map(pr => pr.html_url);
