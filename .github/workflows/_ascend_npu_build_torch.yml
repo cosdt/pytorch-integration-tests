@@ -13,7 +13,8 @@ on:
         description: 'The docker image which will be used to build'
       pr-number:
         required: false
-        type: number
+        type: string
+        default: ''
         description: 'The number of pull request'
       ref:
         required: false
