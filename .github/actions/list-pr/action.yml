@@ -35,16 +35,16 @@ runs:
         result-encoding: string
         script: |
           const resp = await github.rest.pulls.list({
-              owner: inputs.owner,
-              repo: inputs.repository,
+              owner: ${{ inputs.owner }},
+              repo: ${{ inputs.repository }},
               state: 'open',
               sort: 'created',
               per_page: 100
           });
 
-          const timeRange = parseInt(inputs.hours) * 60 * 60 * 1000;
+          const timeRange = parseInt(${{ inputs.hours }}) * 60 * 60 * 1000;
           const sinceTime = new Date(Date.now() - timeRange).toISOString();
-          const input_labels = inputs.labels;
+          const input_labels = ${{ inputs.labels }};
           const labels = input_labels
               ? input_labels.split(/,|\n/).map(label => label.trim())
               : [];
