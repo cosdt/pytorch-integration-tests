@@ -49,6 +49,11 @@ runs:
             ? input_labels.split(/[,\n]/).map(label => label.trim())
             : [];
 
+          core.info(`timeRange: ${timeRange}`);
+          core.info(`sinceTime: ${sinceTime}`);
+          core.info(`labels: ${labels}`);
+          core.info(`resp: ${resp.data}`);
+
           const prs = resp.data.filter(pr => {
             const hasLabel = labels.length === 0
               || labels.every(label => pr.labels.some(prLabel => prLabel.name === label));
@@ -59,8 +64,10 @@ runs:
             return hasLabel && isWithinTimeRange;
           });
 
-          const pr_urls = prs.map(pr => pr.html_url);
-          core.info(`prs: ${pr_urls.join(",\n")}`);
+          if (prs.length > 0) {
+            const pr_urls = prs.map(pr => pr.html_url);
+            core.info(`prs: ${pr_urls.join(",\n")}`);
+          }
 
           return prs.map(pr => ({
             number: pr.number,
