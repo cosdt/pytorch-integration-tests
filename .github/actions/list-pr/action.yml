@@ -1,4 +1,4 @@
-name: 'List Pull Requests'
+name: 'List pull requests'
 description: 'list and put output pull requests'
 inputs:
   owner:
@@ -32,7 +32,6 @@ runs:
       id: list-pr
       with:
         github-token: ${{ inputs.token }}
-        debug: true
         result-encoding: string
         script: |
           const timeRange = parseInt("${{ inputs.hours }}") * 60 * 60 * 1000;
