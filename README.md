@@ -113,7 +113,7 @@ across various devices by running comprehensive GitHub workflows.
 | timm_vision_transformer         | ✅    |
 | timm_vision_transformer_large   | ✅    |
 | timm_vovnet                     | ✅    |
-| torch_multimodal_clip           | ✅    |
+| torch_multimodal_clip           | ❌    |
 | tts_angular                     | ✅    |
 | vgg16                           | ✅    |
 | vision_maskrcnn                 | ❌    |
