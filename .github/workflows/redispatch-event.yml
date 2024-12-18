@@ -15,7 +15,7 @@ jobs:
       - name: Print PR event payload
         continue-on-error: true
         run: |
-          echo "payload: ${{ toJson(github.event.client_payload) }}"
+          echo "payload: ${{ toJSON(github.event.client_payload) }}"
 
       - name: Redispatch PyTorch event
         uses: peter-evans/repository-dispatch@v3
@@ -23,4 +23,4 @@ jobs:
           token: ${{ secrets.COSDT_BOT_TOKEN }}
           repository: ${{ github.repository }}
           event-type: pytorch-pr-event-redispatch
-          client-payload: ${{ toJson(github.event.client_payload) }}
+          client-payload: ${{ toJSON(github.event.client_payload) }}
