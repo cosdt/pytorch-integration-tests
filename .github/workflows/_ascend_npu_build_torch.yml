@@ -98,7 +98,6 @@ jobs:
 
       - name: Upload distribution artifact
         id: upload-dist
-        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.list-dist.outputs.dist-name }}

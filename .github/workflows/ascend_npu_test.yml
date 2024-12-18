@@ -70,6 +70,13 @@ on:
         description: 'The device selected to run on'
 
 # Only cancel the previous runs when triggered by a pull_request event
+#
+# TODO: As the doc says, there can be at most one running and one pending job
+#       in a concurrency group at any time. But we want all workflows to be
+#       queued, not cancelled. This is a shortcomings of GitHub Actions.
+#
+# Doc: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#concurrency
+# Discussion: https://github.com/orgs/community/discussions/5435
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -130,7 +137,9 @@ jobs:
       - prepare
       - build-torch
       - build
-    if: ${{ !cancelled() && (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success')) }}
+    if: |
+      !cancelled() && github.event_name != 'repository_dispatch' &&
+      (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
     uses: ./.github/workflows/_ascend_npu_ut.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
@@ -146,7 +155,9 @@ jobs:
       - build-torch
       - build
       - test
-    if: ${{ !cancelled() && (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success')) }}
+    if: |
+      !cancelled() && github.event_name != 'repository_dispatch' &&
+      (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
     uses: ./.github/workflows/_ascend_npu_benchmark.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}

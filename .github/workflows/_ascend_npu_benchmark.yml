@@ -165,7 +165,7 @@ jobs:
               --output ascend_npu_benchmark.json
 
       - name: Upload the benchmark report file
-        id: upload-output
+        id: upload-report
         uses: actions/upload-artifact@v4
         with:
           name: ascend_npu_benchmark.json
@@ -179,7 +179,7 @@ jobs:
           python .ci/benchmark.py --write-gh-job-summary --path benchmark/ascend_npu_benchmark.json
 
       - name: Update README.md
-        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name) }}
         id: update-readme
         run: |
           python .ci/benchmark.py --update-readme --path benchmark/ascend_npu_benchmark.json
@@ -206,6 +206,14 @@ jobs:
           title: '[Ascend NPU] Update torchbenchmark report in README.md'
           body: |
             The torchbenchmark results running on Ascend NPU have changed, I'm updating the report in README.md.
+
+            Please check out the following resources for more information:
+
+            - [Workflow run][1]
+            - [Torchbenchmark report (click to download)][2]
+
+            [1]: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            [2]: ${{ steps.upload-report.outputs.artifact-url }}
 
             cc: @Yikun @hipudding @FFFrog @Zhenbin-8 @zeshengzong @wjunLu @MengqingCao @shink
           reviewers: shink
