@@ -210,7 +210,7 @@ jobs:
             Please check out the following resources for more information:
 
             - [Workflow run][1]
-            - [Torchbenchmark report (click to download)][2]
+            - [Torchbenchmark report][2] (click to download)
 
             [1]: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             [2]: ${{ steps.upload-report.outputs.artifact-url }}

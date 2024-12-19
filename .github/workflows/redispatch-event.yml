@@ -6,7 +6,7 @@ on:
 
 jobs:
   redispatch-pr-event:
-    name: 'Redispatch PyTorch events for #${{ github.event.client_payload.pull_request.number }}'
+    name: 'Redispatch PR event - #${{ github.event.client_payload.pull_request.number }}'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,7 +17,7 @@ jobs:
         run: |
           printf "payload: ${{ toJSON(github.event.client_payload) }}"
 
-      - name: Redispatch PyTorch event
+      - name: Redispatch PR event
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.COSDT_BOT_TOKEN }}

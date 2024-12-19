@@ -61,7 +61,7 @@ jobs:
       matrix:
         data: ${{ fromJSON(needs.list-pr.outputs.prs) }}
     steps:
-      - name: Dispatch PR events to be out-of-tree test infra
+      - name: Dispatch PR event to the out-of-tree test infra
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.COSDT_BOT_TOKEN }}

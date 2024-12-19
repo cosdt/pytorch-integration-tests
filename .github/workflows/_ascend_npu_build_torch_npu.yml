@@ -117,6 +117,20 @@ jobs:
           echo "dist-name=${dist_name}" >> $GITHUB_OUTPUT
           echo "dist-path=${dist_path}" >> $GITHUB_OUTPUT
 
+      - name: Install torch_npu
+        working-directory: torch_npu/dist
+        run: |
+          pip install ${{ steps.list-dist.outputs.dist-name }}
+
+      - name: List torch_npu version
+        id: list-version
+        run: |
+          torch_version=$(python -c "import torch; print(torch.__version__)")
+          torch_npu_version=$(python -c "import torch_npu; print(torch_npu.__version__)")
+          echo "torch version: ${torch_version}"
+          echo "torch_npu version: ${torch_npu_version}"
+          echo "torch-npu-version=${torch_npu_version}" >> $GITHUB_OUTPUT
+
       - name: Upload distribution artifact
         id: upload-dist
         uses: actions/upload-artifact@v4
@@ -130,5 +144,5 @@ jobs:
       - name: Write to workflow job summary
         if: ${{ steps.upload-dist.outputs.artifact-url }}
         run: |
-          echo "## torch_npu built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "## torch_npu-${{ steps.list-version.outputs.torch-npu-version }} built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})." >> $GITHUB_STEP_SUMMARY

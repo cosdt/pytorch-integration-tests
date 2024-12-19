@@ -96,6 +96,18 @@ jobs:
           echo "dist-name=${dist_name}" >> $GITHUB_OUTPUT
           echo "dist-path=${dist_path}" >> $GITHUB_OUTPUT
 
+      - name: Install torch
+        working-directory: pytorch/dist
+        run: |
+          pip install ${{ steps.list-dist.outputs.dist-name }}
+
+      - name: List torch version
+        id: list-version
+        run: |
+          torch_version=$(python -c "import torch; print(torch.__version__)")
+          echo "torch version: ${torch_version}"
+          echo "torch-version=${torch_version}" >> $GITHUB_OUTPUT
+
       - name: Upload distribution artifact
         id: upload-dist
         uses: actions/upload-artifact@v4
@@ -109,5 +121,5 @@ jobs:
       - name: Write to workflow job summary
         if: ${{ steps.upload-dist.outputs.artifact-url }}
         run: |
-          echo "## torch built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "## torch-${{ steps.list-version.outputs.torch-version }} built successfully! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "You can download the distribution package [here](${{ steps.upload-dist.outputs.artifact-url }})." >> $GITHUB_STEP_SUMMARY

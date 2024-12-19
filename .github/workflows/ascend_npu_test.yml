@@ -78,7 +78,7 @@ on:
 # Doc: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#concurrency
 # Discussion: https://github.com/orgs/community/discussions/5435
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.client_payload.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
