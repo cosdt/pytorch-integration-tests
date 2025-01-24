@@ -49,11 +49,6 @@ jobs:
         --device /dev/davinci_manager
         --device /dev/devmm_svm
         --device /dev/hisi_hdc
-      env:
-        HTTP_PROXY: http://127.0.0.1:10809
-        HTTPS_PROXY: http://127.0.0.1:10809
-        ALL_PROXY: socks5://127.0.0.1:10808
-        SOCKS_PROXY: socks5://127.0.0.1:10808
     outputs:
       dist-name: ${{ steps.list-dist.outputs.dist-name }}
     steps:
