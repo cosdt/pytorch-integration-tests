@@ -42,7 +42,7 @@ across various devices by running comprehensive GitHub workflows.
 | doctr_det_predictor             | ✅    |
 | doctr_reco_predictor            | ✅    |
 | drq                             | ✅    |
-| fastNLP_Bert                    | ✅    |
+| fastNLP_Bert                    | ❌    |
 | functorch_dp_cifar10            | ✅    |
 | functorch_maml_omniglot         | ✅    |
 | hf_Albert                       | ✅    |
@@ -113,7 +113,7 @@ across various devices by running comprehensive GitHub workflows.
 | timm_vision_transformer         | ✅    |
 | timm_vision_transformer_large   | ✅    |
 | timm_vovnet                     | ✅    |
-| torch_multimodal_clip           | ✅    |
+| torch_multimodal_clip           | ❌    |
 | tts_angular                     | ✅    |
 | vgg16                           | ✅    |
 | vision_maskrcnn                 | ❌    |
