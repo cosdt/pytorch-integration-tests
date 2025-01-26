@@ -42,7 +42,7 @@ across various devices by running comprehensive GitHub workflows.
 | doctr_det_predictor             | ✅    |
 | doctr_reco_predictor            | ✅    |
 | drq                             | ✅    |
-| fastNLP_Bert                    | ✅    |
+| fastNLP_Bert                    | ❌    |
 | functorch_dp_cifar10            | ✅    |
 | functorch_maml_omniglot         | ✅    |
 | hf_Albert                       | ✅    |
@@ -79,7 +79,7 @@ across various devices by running comprehensive GitHub workflows.
 | moondream                       | ❌    |
 | nanogpt                         | ✅    |
 | nvidia_deeprecommender          | ❌    |
-| opacus_cifar10                  | ✅    |
+| opacus_cifar10                  | ❌    |
 | phlippe_densenet                | ✅    |
 | phlippe_resnet                  | ✅    |
 | pyhpc_equation_of_state         | ✅    |
@@ -93,7 +93,7 @@ across various devices by running comprehensive GitHub workflows.
 | resnet50                        | ✅    |
 | resnet50_quantized_qat          | ❌    |
 | resnext50_32x4d                 | ✅    |
-| sam                             | ✅    |
+| sam                             | ❌    |
 | sam_fast                        | ❌    |
 | shufflenet_v2_x1_0              | ✅    |
 | simple_gpt                      | ❌    |
@@ -113,7 +113,7 @@ across various devices by running comprehensive GitHub workflows.
 | timm_vision_transformer         | ✅    |
 | timm_vision_transformer_large   | ✅    |
 | timm_vovnet                     | ✅    |
-| torch_multimodal_clip           | ✅    |
+| torch_multimodal_clip           | ❌    |
 | tts_angular                     | ✅    |
 | vgg16                           | ✅    |
 | vision_maskrcnn                 | ❌    |
