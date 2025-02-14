@@ -1,6 +1,5 @@
 import argparse
 import os
-import sys
 from src.benchmark.utils import read_metrics, to_markdown_table
 
 

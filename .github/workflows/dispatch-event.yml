@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # List PRs created in the past 24 hours
+      # List PRs created in the past 24 hours and labeled 'ciflow/out-of-tree'
       - name: List PyTorch PRs
         id: list-pr
         uses: ./.github/actions/list-pr
@@ -39,7 +39,7 @@ jobs:
           token: ${{ secrets.COSDT_BOT_TOKEN }}
           owner: pytorch
           repository: pytorch
-          labels: ${{ github.event.inputs.labels || '' }}
+          labels: ${{ github.event.inputs.labels || 'ciflow/out-of-tree' }}
           hours: ${{ github.event.inputs.hours || '24' }}
 
   dispatch-pr:
@@ -49,7 +49,7 @@ jobs:
       - list-pr
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: 1 # TODO: We now only support running 1 job at the same time on NPU CI runer
       matrix:
         data: ${{ fromJSON(needs.list-pr.outputs.prs) }}
     steps:
