@@ -39,8 +39,6 @@ jobs:
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
-      options: >-
-        --network host
     outputs:
       dist-name: ${{ steps.list-dist.outputs.dist-name }}
     steps:
