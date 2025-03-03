@@ -106,6 +106,7 @@ jobs:
           bash ci/build.sh --python=${{ steps.list-py-version.outputs.py-version }}
         env:
           _GLIBCXX_USE_CXX11_ABI: 1 # https://gitee.com/ascend/pytorch/issues/IBJFZY
+          MAX_JOBS: 4
 
       - name: List distribution package
         id: list-dist
