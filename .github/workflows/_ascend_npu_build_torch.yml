@@ -80,7 +80,7 @@ jobs:
         run: |
           python setup.py build bdist_wheel
         env:
-          MAX_JOBS: 8
+          MAX_JOBS: 4
 
       - name: List distribution package
         id: list-dist
