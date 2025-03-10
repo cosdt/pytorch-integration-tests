@@ -61,11 +61,7 @@ jobs:
       - name: Checkout torch_npu
         uses: actions/checkout@v4
         with:
-          # TODO(shink): Use Ascend/pytorch once this pr merged:
-          # https://gitee.com/ascend/pytorch/pulls/12854
-          # repository: Ascend/pytorch
-          repository: shink/torchnpu
-          ref: feat/autoload
+          repository: Ascend/pytorch
           submodules: recursive
           path: torch_npu
 
@@ -106,7 +102,7 @@ jobs:
           bash ci/build.sh --python=${{ steps.list-py-version.outputs.py-version }}
         env:
           _GLIBCXX_USE_CXX11_ABI: 1 # https://gitee.com/ascend/pytorch/issues/IBJFZY
-          MAX_JOBS: 4
+          MAX_JOBS: 8
 
       - name: List distribution package
         id: list-dist

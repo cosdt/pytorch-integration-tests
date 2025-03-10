@@ -63,11 +63,7 @@ jobs:
       - name: Checkout torch_npu
         uses: actions/checkout@v4
         with:
-          # TODO(shink): Use Ascend/pytorch once this pr merged:
-          # https://gitee.com/ascend/pytorch/pulls/12854
-          # repository: Ascend/pytorch
-          repository: shink/torchnpu
-          ref: feat/autoload
+          repository: Ascend/pytorch
           path: torch_npu
 
       - name: Install pip dependencies
