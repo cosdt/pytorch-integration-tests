@@ -79,8 +79,6 @@ jobs:
         working-directory: pytorch
         run: |
           python setup.py build bdist_wheel
-        env:
-          MAX_JOBS: 8
 
       - name: List distribution package
         id: list-dist
