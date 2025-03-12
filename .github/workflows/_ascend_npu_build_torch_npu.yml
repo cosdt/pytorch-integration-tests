@@ -1,5 +1,8 @@
 name: '_ascend_npu_build'
 
+
+
+
 on:
   workflow_call:
     inputs:
