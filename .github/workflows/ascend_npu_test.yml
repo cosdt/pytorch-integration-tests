@@ -83,16 +83,6 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  tmp:
-    name: Tmp
-    runs-on: ubuntu-latest
-    container:
-      image: ascendai/cann
-    steps:
-      - name: Show
-        run: |
-          python -c "import multiprocessing; print(multiprocessing.cpu_count())"
-
   prepare:
     name: Prepare
     runs-on: ubuntu-latest
