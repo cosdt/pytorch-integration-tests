@@ -1,6 +1,5 @@
 name: '_ascend_npu_build'
 
-
 on:
   workflow_call:
     inputs:
@@ -56,7 +55,7 @@ jobs:
       - name: Config git
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config --global --url."https://gh-proxy.test.osinfra.cn/https://github.com/".insteadOf https://github.com/
+          git config --global url."https://gh-proxy.test.osinfra.cn/https://github.com/".insteadOf https://github.com/
 
       - name: Checkout
         uses: actions/checkout@v4
