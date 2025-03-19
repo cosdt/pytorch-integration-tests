@@ -57,7 +57,7 @@ jobs:
           hours: ${{ github.event.inputs.hours || '24' }}
 
   dispatch-pr:
-    if: ${{ needs.list-pr.outputs.prs }}
+    if: ${{ needs.list-pr.outputs.prs != '[]' }}
     name: 'Dispatch PR event - #${{ matrix.data.pull_request.number }}'
     runs-on: ubuntu-latest
     needs:
