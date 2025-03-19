@@ -124,6 +124,7 @@ jobs:
       - name: List torch_npu version
         id: list-version
         run: |
+          export TORCH_DEVICE_BACKEND_AUTOLOAD=0
           torch_version=$(python -c "import torch; print(torch.__version__)")
           torch_npu_version=$(python -c "import torch_npu; print(torch_npu.__version__)")
           echo "torch version: ${torch_version}"
