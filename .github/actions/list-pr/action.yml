@@ -70,7 +70,7 @@ runs:
             core.info(`prs: ${pr_urls.join("\n")}`);
           } else {
             core.warning("No PR found");
-            return None;
+            return null;
           }
 
           const result = prs.map(pr => ({
