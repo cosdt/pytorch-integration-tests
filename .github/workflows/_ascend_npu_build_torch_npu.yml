@@ -68,58 +68,9 @@ jobs:
           submodules: recursive
           path: torch_npu
 
-      - name: Install torch_npu dependencies
-        working-directory: torch_npu
-        run: |
-          pip install wheel
-          pip install -r requirements.txt
+      
 
-      # TODO
-      # - name: Install torch
-      #   id: install-torch
-      #   uses: ./.github/actions/install-artifact
-      #   with:
-      #     artifact: ${{ inputs.torch-artifact }}
 
-      - name: Download torch artifact
-        if: ${{ inputs.torch-artifact }}
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.torch-artifact }}
-
-      - name: Install torch
-        if: ${{ inputs.torch-artifact }}
-        run: |
-          pip install ${{ inputs.torch-artifact }}
-
-      - name: List Python version
-        id: list-py-version
-        working-directory: torch_npu
-        run: |
-          py_version=$(python --version | awk '{print $2}' | cut -d '.' -f 1,2)
-          echo "py-version=${py_version}" >> $GITHUB_OUTPUT
-
-      - name: Build torch_npu
-        working-directory: torch_npu
-        run: |
-          bash ci/build.sh --python=${{ steps.list-py-version.outputs.py-version }}
-        env:
-          _GLIBCXX_USE_CXX11_ABI: 1 # https://gitee.com/ascend/pytorch/issues/IBJFZY
-          MAX_JOBS: 16
-
-      - name: List distribution package
-        id: list-dist
-        working-directory: torch_npu/dist
-        run: |
-          dist_name=$(ls torch_npu*.whl)
-          dist_path=$(pwd)/${dist_name}
-          echo "dist-name=${dist_name}" >> $GITHUB_OUTPUT
-          echo "dist-path=${dist_path}" >> $GITHUB_OUTPUT
-
-      - name: Install torch_npu
-        working-directory: torch_npu/dist
-        run: |
-          pip install ${{ steps.list-dist.outputs.dist-name }}
 
       - name: List torch_npu version
         id: list-version
