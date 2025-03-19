@@ -53,7 +53,7 @@ jobs:
           token: ${{ secrets.COSDT_BOT_TOKEN }}
           owner: pytorch
           repository: pytorch
-          labels: ${{ github.event.inputs.labels || 'module: PrivateUse1' }}
+          labels: "${{ github.event.inputs.labels || 'module: PrivateUse1' }}"
           hours: ${{ github.event.inputs.hours || '24' }}
 
   dispatch-pr:
