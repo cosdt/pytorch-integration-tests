@@ -69,7 +69,7 @@ runs:
             const pr_urls = prs.map(pr => pr.html_url);
             core.info(`prs: ${pr_urls.join("\n")}`);
           } else {
-            core.warning("No PR found");
+            core.warning("No pull requests found!");
           }
 
           const result = prs.map(pr => ({

@@ -58,7 +58,7 @@ jobs:
 
   dispatch-pr:
     if: ${{ needs.list-pr.outputs.prs != '[]' }}
-    name: 'Dispatch PR event - #${{ matrix.data.pull_request.number || '' }}'
+    name: 'Dispatch PR event - #${{ matrix.data.pull_request.number }}'
     runs-on: ubuntu-latest
     needs:
       - list-pr
