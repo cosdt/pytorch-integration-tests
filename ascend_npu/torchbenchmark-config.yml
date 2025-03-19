@@ -1,0 +1,10 @@
+devices:
+  - "npu"
+backend_extension: "torch_npu"
+link: https://github.com/Ascend/pytorch
+models:
+  - model: llava
+    skip: true # Out of memory
+batch_size: 1
+extra_args:
+  - "--accuracy"

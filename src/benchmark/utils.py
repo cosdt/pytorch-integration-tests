@@ -16,6 +16,7 @@ class TorchBenchModelConfig:
     extra_args: List[str]
     extra_env: Optional[Dict[str, str]] = None
     output_dir: Optional[pathlib.Path] = None
+    skip: bool = False
 
 
 @dataclasses.dataclass
@@ -68,6 +69,7 @@ def read_metrics(path: str, *, metric=None) -> List[TorchBenchModelMetric]:
                 extra_args=key_dict.get("extra_args"),
                 extra_env=key_dict.get("extra_env"),
                 output_dir=key_dict.get("output_dir"),
+                skip=key_dict.get("skip"),
             )
             model_metric = TorchBenchModelMetric(config, metric_value)
             metrics.append(model_metric)
@@ -79,7 +81,7 @@ def generate_table_rows(metrics: List[TorchBenchModelMetric]):
     models = list({metric.key.name for metric in metrics})
     models = sorted(models, key=lambda x: x.lower())
 
-    def filter_metric(metrics: List[TorchBenchModelMetric], *, model, device):
+    def _filter_metric(metrics: List[TorchBenchModelMetric], *, model, device):
         for metric in metrics:
             if metric.key.name == model and metric.key.device == device:
                 return metric
@@ -88,7 +90,7 @@ def generate_table_rows(metrics: List[TorchBenchModelMetric]):
     for model in models:
         row = [model]
         for device in devices:
-            metric = filter_metric(metrics, model=model, device=device)
+            metric = _filter_metric(metrics, model=model, device=device)
             if metric is not None:
                 if metric.value == "pass":
                     cell = "✅"
