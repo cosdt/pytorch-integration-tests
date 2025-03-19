@@ -4,18 +4,32 @@ on:
   schedule:
     - cron: '0 12 * * *'
 
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - '.github/workflows/dispatch-event.yml'
+      - '.github/workflows/redispatch-event.yml'
+      - '.github/actions/list-pr/**'
+      - '!**/*.md'
+
   workflow_dispatch:
     inputs:
       labels:
         required: false
         type: string
-        default: ''
+        default: 'module: PrivateUse1'
         description: 'The labels on pull requests'
       hours:
         required: false
         type: number
         default: 24
         description: 'Pull requests created within this many hours will be listed'
+      limit:
+        required: false
+        type: number
+        default: -1
+        description: 'How many pull requests will be listed'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
@@ -39,7 +53,7 @@ jobs:
           token: ${{ secrets.COSDT_BOT_TOKEN }}
           owner: pytorch
           repository: pytorch
-          labels: ${{ github.event.inputs.labels || '' }}
+          labels: ${{ github.event.inputs.labels || 'module: PrivateUse1' }}
           hours: ${{ github.event.inputs.hours || '24' }}
 
   dispatch-pr:
