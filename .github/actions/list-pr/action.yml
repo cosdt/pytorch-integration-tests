@@ -68,6 +68,9 @@ runs:
           if (prs.length > 0) {
             const pr_urls = prs.map(pr => pr.html_url);
             core.info(`prs: ${pr_urls.join("\n")}`);
+          } else {
+            core.warning("No PR found");
+            return None;
           }
 
           const result = prs.map(pr => ({
