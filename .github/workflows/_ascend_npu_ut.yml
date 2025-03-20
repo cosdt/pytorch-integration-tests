@@ -65,7 +65,7 @@ jobs:
       - name: Checkout torch_npu
         uses: actions/checkout@v4
         with:
-          repository: Ascend/pytorch
+          repository: cllouud/pytorch
           path: torch_npu
 
       - name: Install pip dependencies

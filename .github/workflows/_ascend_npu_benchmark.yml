@@ -73,7 +73,7 @@ jobs:
       - name: Checkout benchmark
         uses: actions/checkout@v4
         with:
-          repository: pytorch/benchmark
+          repository: cllouud/benchmark
           path: benchmark
 
       # TODO
