@@ -10,6 +10,7 @@ on:
       - ".github/workflows/_ascend_npu_build_torch_npu.yml"
       - ".github/workflows/_ascend_npu_ut.yml"
       - ".github/workflows/_ascend_npu_benchmark.yml"
+      - ".github/workflows/_ascend_npu_torchtitan.yml"
       - ".ci/**"
       - "ascend_npu/**"
       - "src/**"
@@ -23,6 +24,7 @@ on:
       - ".github/workflows/_ascend_npu_build_torch_npu.yml"
       - ".github/workflows/_ascend_npu_ut.yml"
       - ".github/workflows/_ascend_npu_benchmark.yml"
+      - ".github/workflows/_ascend_npu_torchtitan.yml"
       - ".ci/**"
       - "ascend_npu/**"
       - "src/**"
@@ -162,6 +164,26 @@ jobs:
       !cancelled() && github.event_name != 'repository_dispatch' &&
       (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
     uses: ./.github/workflows/_ascend_npu_benchmark.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
+
+  torchtitan:
+    name: Run torchtitan
+    needs:
+      - prepare
+      - build-torch
+      - build
+      - test
+    if: |
+      !cancelled() && github.event_name != 'repository_dispatch' &&
+      (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
+    uses: ./.github/workflows/_ascend_npu_torchtitan.yml
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
