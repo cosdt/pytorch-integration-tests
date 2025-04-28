@@ -10,6 +10,7 @@ on:
       - ".github/workflows/_ascend_npu_build_torch_npu.yml"
       - ".github/workflows/_ascend_npu_ut.yml"
       - ".github/workflows/_ascend_npu_benchmark.yml"
+      - ".github/workflows/_ascend_npu_torchtitan.yml"
       - ".ci/**"
       - "ascend_npu/**"
       - "src/**"
@@ -23,6 +24,7 @@ on:
       - ".github/workflows/_ascend_npu_build_torch_npu.yml"
       - ".github/workflows/_ascend_npu_ut.yml"
       - ".github/workflows/_ascend_npu_benchmark.yml"
+      - ".github/workflows/_ascend_npu_torchtitan.yml"
       - ".ci/**"
       - "ascend_npu/**"
       - "src/**"
@@ -54,7 +56,7 @@ on:
           - ascendai/cann:7.0.1-910b-ubuntu22.04-py3.8
           - ascendai/cann:8.0.0-910b-ubuntu22.04-py3.10
           - ascendai/cann:latest
-        default: "ascendai/cann:latest"
+        default: "ascendai/cann:7.0.1-910b-ubuntu22.04-py3.8"
         description: "The docker image which will be loaded"
       device:
         required: true
@@ -157,7 +159,6 @@ jobs:
       - prepare
       - build-torch
       - build
-      - test
     if: |
       !cancelled() && github.event_name != 'repository_dispatch' &&
       (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
@@ -166,6 +167,25 @@ jobs:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
       device: ${{ needs.prepare.outputs.device }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
+
+  torchtitan:
+    name: Run torchtitan
+    needs:
+      - prepare
+      - build-torch
+      - build
+    if: |
+      !cancelled() && github.event_name != 'repository_dispatch' &&
+      (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
+    uses: ./.github/workflows/_ascend_npu_torchtitan.yml
+    with:
+      runner: "linux-arm64-npu-2"
+      image: ${{ needs.prepare.outputs.image }}
+      device:  ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
     secrets:
