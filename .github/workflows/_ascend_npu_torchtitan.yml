@@ -127,7 +127,7 @@ jobs:
 
       - name: Run torchtitan integration_test
         working-directory: torchtitan
-        run: |
+        run: | 
           npu_count=$(python -c "import torch; print(torch.npu.device_count())")
           python ./tests/integration_tests.py artifacts-to-be-uploaded --ngpu ${npu_count}
 

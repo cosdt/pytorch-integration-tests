@@ -120,6 +120,25 @@ jobs:
       image: ${{ needs.prepare.outputs.image }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
 
+  benchmark:
+    name: Run benchmarks
+    needs:
+      - prepare
+      - build-torch
+      - build
+    if: |
+      !cancelled() && github.event_name != 'repository_dispatch' &&
+      (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
+    uses: ./.github/workflows/_ascend_npu_benchmark.yml
+    with:
+      runner: ${{ needs.prepare.outputs.runner }}
+      image: ${{ needs.prepare.outputs.image }}
+      device: ${{ needs.prepare.outputs.device }}
+      torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
+      torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
+
   torchtitan:
     name: Run torchtitan
     needs:
@@ -131,8 +150,10 @@ jobs:
       (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
     uses: ./.github/workflows/_ascend_npu_torchtitan.yml
     with:
-      runner: ${{ needs.prepare.outputs.runner }}
+      runner: "linux-arm64-npu-4"
       image: ${{ needs.prepare.outputs.image }}
+      device:  ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
-
+    secrets:
+      pr-token: ${{ secrets.COSDT_BOT_TOKEN }}
