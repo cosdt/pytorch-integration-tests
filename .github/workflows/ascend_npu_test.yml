@@ -56,20 +56,6 @@ on:
           - ascendai/cann:latest
         default: "ascendai/cann:latest"
         description: "The docker image which will be loaded"
-      device:
-        required: true
-        type: choice
-        options:
-          - /dev/davinci1
-          - /dev/davinci2
-          - /dev/davinci3
-          - /dev/davinci4
-          - /dev/davinci5
-          - /dev/davinci6
-          - /dev/davinci7
-          - /dev/davinci8
-        default: "/dev/davinci5"
-        description: "The device selected to run on"
 
 # Only cancel the previous runs when triggered by a pull_request event
 #
@@ -98,7 +84,6 @@ jobs:
         id: set-env
         run: |
           echo "runner=${{ github.event.inputs.runner || 'linux-arm64-npu-1' }}" >> $GITHUB_OUTPUT
-          echo "device=${{ github.event.inputs.device || '/dev/davinci5' }}" >> $GITHUB_OUTPUT
           echo "image=${{ github.event.inputs.image || 'ascendai/cann:latest' }}" >> $GITHUB_OUTPUT
 
       # TODO(shink): List ghstack PR's ref
@@ -131,7 +116,6 @@ jobs:
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
 
   test:
@@ -147,7 +131,6 @@ jobs:
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
 
@@ -157,7 +140,6 @@ jobs:
       - prepare
       - build-torch
       - build
-      - test
     if: |
       !cancelled() && github.event_name != 'repository_dispatch' &&
       (success() || (needs.build-torch.result == 'skipped' && needs.build.result == 'success'))
@@ -165,7 +147,6 @@ jobs:
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
     secrets:
