@@ -3,9 +3,9 @@
 ## 贡献流程
 
 1. 在本仓库提交 Pull Request 并得到充分验证
-2. Pull Request 合入并稳定运行后再同步提交到 [pytorch-fdn/oota][1]
+2. Pull Request 合入并稳定运行后再同步提交到 [pytorch-fdn/oota][0]
 
-[1]: https://github.com/pytorch-fdn/oota
+[0]: https://github.com/pytorch-fdn/oota
 
 ## 整体流程
 
@@ -14,22 +14,29 @@
 1. 编译 torch
 
    - 只有监听到上游 PyTorch 仓库 PR 事件时，才会基于上游 PR 的代码源码编译 torch
-   - 否则会安装 torch_npu requirements.txt 中指定的 torch 版本
+   - 否则会安装 torch_npu [requirements.txt][1] 中指定的 torch 版本
 
 2. 编译 torch_npu
 
    - 核心是执行 `bash ci/build.sh` 进行编译
 
-3. 执行 torch_npu ut
+3. 执行 torch_npu 单元测试
 
    - 核心是执行 `python torch_npu/ci/access_control_test.py` 进行测试
 
-4. 执行 torch_npu benchmark
+4. 执行 torch_npu [torchbenchmark][2]
 
    - 核心是执行 `python benchmark/run_benchmark.py test_bench` 进行测试
-   - 周期触发时会自动将 TorchBenchmark 的测试结果提交 PR，例如：[#46][2]
+   - 周期触发时会自动将 TorchBenchmark 的测试结果提交 PR，例如：[#46][3]
 
-[2]: https://github.com/cosdt/pytorch-integration-tests/pull/46
+5. 执行其他 PyTorch 生态项目测试（如 [torchtitan][4], [torchtune][5], [torchchat][6]）
+
+[1]: https://github.com/Ascend/pytorch/blob/master/requirements.txt
+[2]: https://github.com/pytorch/benchmark
+[3]: https://github.com/cosdt/pytorch-integration-tests/pull/46
+[4]: https://github.com/pytorch/torchtitan
+[5]: https://github.com/pytorch/torchtune
+[6]: https://github.com/pytorch/torchchat
 
 ## 工作流触发条件
 
