@@ -18,7 +18,7 @@
 
 2. 编译 torch_npu
 
-   - 核心是执行 `bash ci/build.sh` 进行编译
+   - 核心是执行 `bash torch_npu/ci/build.sh` 进行编译
 
 3. 执行 torch_npu 单元测试
 
