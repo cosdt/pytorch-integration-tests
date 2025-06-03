@@ -38,7 +38,7 @@ defaults:
 
 jobs:
   setup_environment:
-    name: Run Torchtitan Environment
+    name: run torchtitan tests
     runs-on: ${{ inputs.runner }}
     container:
       image: ${{ inputs.image }}
@@ -112,10 +112,6 @@ jobs:
         run: |
           pip install ${{ inputs.torch-npu-artifact }}
 
-      - name: Install nightly torchvision and torchaudio
-        run: |
-          pip install --pre torchvision torchaudio --no-deps --index-url https://download.pytorch.org/whl/nightly/cpu
-
       - name: Install project dependencies
         run: |
           pip install -r requirements.txt
@@ -132,7 +128,6 @@ jobs:
       - name: Run torchtitan integration_test
         working-directory: torchtitan
         run: |
-          mkdir artifacts-to-be-uploaded
           npu_count=$(python -c "import torch; print(torch.npu.device_count())")
           python ./tests/integration_tests.py artifacts-to-be-uploaded --ngpu ${npu_count}
 
