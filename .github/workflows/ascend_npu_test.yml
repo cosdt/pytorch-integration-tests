@@ -120,8 +120,6 @@ jobs:
       image: ${{ needs.prepare.outputs.image }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
 
-<<<<<<< HEAD
-=======
   test:
     name: Test torch_npu
     needs:
@@ -135,7 +133,6 @@ jobs:
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
 
@@ -152,7 +149,6 @@ jobs:
     with:
       runner: ${{ needs.prepare.outputs.runner }}
       image: ${{ needs.prepare.outputs.image }}
-      device: ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
     secrets:
@@ -171,7 +167,6 @@ jobs:
     with:
       runner: "linux-arm64-npu-4"
       image: ${{ needs.prepare.outputs.image }}
-      device:  ${{ needs.prepare.outputs.device }}
       torch-artifact: ${{ needs.build-torch.outputs.torch-artifact }}
       torch-npu-artifact: ${{ needs.build.outputs.torch-npu-artifact }}
     secrets:
