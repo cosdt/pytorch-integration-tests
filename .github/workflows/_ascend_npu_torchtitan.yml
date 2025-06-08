@@ -104,6 +104,10 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-cov tyro
+          pip install torchdata>=0.8.0
+          pip install datasets>=3.6.0
+          pip install tomli>=1.1.0
+          pip install tensorboard tiktoken blobfile tabulate wandb fsspec tyro
 
       - name: Show environment info
         run: |
