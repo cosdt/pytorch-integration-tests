@@ -11,10 +11,6 @@ on:
         required: true
         type: string
         description: "The docker image which will be loaded"
-      device:
-        required: true
-        type: string
-        description: "The device selected to run on"
       torch-artifact:
         required: false
         type: string
@@ -27,14 +23,6 @@ on:
       pr-token:
         description: "A token used to create a pull request"
         required: true
-
-# Bash shells do not use ~/.profile or ~/.bashrc so these shells need to be explicitly
-# declared as "shell: bash -el {0}" on steps that need to be properly activated.
-# It's used to activate ascend-toolkit environment variables.
-
-defaults:
-  run:
-    shell: bash -el {0}
 
 jobs:
   setup_environment:
@@ -116,6 +104,10 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-cov tyro
+          pip install torchdata>=0.8.0
+          pip install datasets>=3.6.0
+          pip install tomli>=1.1.0
+          pip install tensorboard tiktoken blobfile tabulate wandb fsspec tyro
 
       - name: Show environment info
         run: |
@@ -127,7 +119,7 @@ jobs:
 
       - name: Run torchtitan integration_test
         working-directory: torchtitan
-        run: |
+        run: | 
           npu_count=$(python -c "import torch; print(torch.npu.device_count())")
           python ./tests/integration_tests.py artifacts-to-be-uploaded --ngpu ${npu_count}
 
