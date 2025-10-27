@@ -77,7 +77,7 @@ jobs:
 
       - name: Download torch artifact
         if: ${{ inputs.torch-artifact }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ inputs.torch-artifact }}
 
@@ -99,7 +99,7 @@ jobs:
           echo "torch-version=${torch_version}" >> $GITHUB_OUTPUT
 
       - name: Download torch_npu artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ${{ inputs.torch-npu-artifact }}
           path: ascend_npu
@@ -190,7 +190,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download README.md
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: README.md
 
